@@ -1,0 +1,1132 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BastionBit — генератор надёжных паролей</title>
+  <meta name="description" content="BastionBit создаёт надёжные пароли и честно считает их стойкость. Всё работает в браузере — пароли никуда не отправляются.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-bar">
+      <a class="brand" href="#generator" aria-label="BastionBit, на главную">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <defs>
+            <linearGradient id="brand-gradient" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#2F55D4"/>
+              <stop offset="1" stop-color="#7A4FEA"/>
+            </linearGradient>
+          </defs>
+          <rect width="32" height="32" rx="8" fill="url(#brand-gradient)"/>
+          <path fill="#fff" fill-rule="evenodd" d="M8 8h3v2.5h2.5V8h5v2.5H21V8h3v15a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 8 23V8Zm8 6.2a2.3 2.3 0 0 0-1.15 4.29l-.6 3.51h3.5l-.6-3.51A2.3 2.3 0 0 0 16 14.2Z"/>
+        </svg>
+        <span class="brand-name">Bastion<span class="brand-accent">Bit</span></span>
+      </a>
+      <p class="brand-tagline">Надёжные пароли и честная математика</p>
+    </div>
+  </header>
+
+  <div class="tabs-bar">
+    <div class="container">
+      <div class="tabs" role="tablist" aria-label="Разделы">
+        <button class="tab" type="button" role="tab" id="tab-generator" aria-controls="panel-generator">Генератор</button>
+        <button class="tab" type="button" role="tab" id="tab-analyzer" aria-controls="panel-analyzer">Анализатор</button>
+        <button class="tab" type="button" role="tab" id="tab-trainer" aria-controls="panel-trainer">Тренажёр</button>
+        <button class="tab" type="button" role="tab" id="tab-theory" aria-controls="panel-theory">Теория</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="container main">
+
+    <!-- ============ Генератор ============ -->
+    <section class="panel" id="panel-generator" role="tabpanel" aria-labelledby="tab-generator">
+      <header class="panel-head">
+        <h1>Генератор паролей</h1>
+        <p class="lead" id="gen-lead">Случайный пароль, который невозможно угадать. Создаётся прямо в вашем браузере.</p>
+      </header>
+
+      <div class="mode-switch" id="gen-modes" role="radiogroup" aria-label="Как создать пароль">
+        <label class="mode-option"><input type="radio" name="gen-mode" value="random" checked><span>Случайный</span></label>
+        <label class="mode-option"><input type="radio" name="gen-mode" value="keyword"><span>Из слова</span></label>
+        <label class="mode-option"><input type="radio" name="gen-mode" value="phrase"><span>Фраза</span></label>
+        <label class="mode-option"><input type="radio" name="gen-mode" value="rule"><span>Правило</span></label>
+      </div>
+
+      <!-- Случайный пароль (1.1) -->
+      <div class="mode-panel" id="mode-random">
+        <div class="card result-card">
+          <div class="password-row">
+            <p class="password" id="gen-password" aria-live="polite" aria-atomic="true"></p>
+            <div class="password-actions">
+              <button class="icon-button" type="button" id="gen-refresh" aria-label="Создать новый пароль" title="Создать новый пароль">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              </button>
+              <button class="button button-primary copy-button" type="button" id="gen-copy">
+                <svg class="icon-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                <span class="button-label">Копировать</span>
+              </button>
+            </div>
+          </div>
+          <div class="strength" id="gen-strength-box">
+            <div class="meter" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+            <p class="strength-text"><strong id="gen-strength">—</strong><span class="dot" aria-hidden="true">·</span><span id="gen-bits">—</span></p>
+          </div>
+        </div>
+
+        <div class="card settings-card">
+          <div class="length-setting">
+            <div class="length-head">
+              <label for="gen-length">Длина пароля</label>
+              <output id="gen-length-value" for="gen-length">16</output>
+            </div>
+            <input class="range" type="range" id="gen-length" min="8" max="64" step="1" value="16">
+            <div class="range-scale" aria-hidden="true"><span>8</span><span>64</span></div>
+          </div>
+
+          <fieldset class="charsets">
+            <legend>Из чего составить пароль</legend>
+            <div class="check-grid">
+              <label class="check"><input type="checkbox" id="gen-lower" checked><span class="check-text">Строчные буквы<span class="sample">a–z</span></span></label>
+              <label class="check"><input type="checkbox" id="gen-upper" checked><span class="check-text">Заглавные буквы<span class="sample">A–Z</span></span></label>
+              <label class="check"><input type="checkbox" id="gen-digits" checked><span class="check-text">Цифры<span class="sample">0–9</span></span></label>
+              <label class="check"><input type="checkbox" id="gen-symbols" checked><span class="check-text">Символы<span class="sample">!@#$%</span></span></label>
+            </div>
+            <label class="check check-wide"><input type="checkbox" id="gen-similar"><span class="check-text">Без похожих символов<span class="sample">I l 1 O 0 |</span></span></label>
+          </fieldset>
+          <p class="hint" id="gen-hint" role="status"></p>
+        </div>
+
+        <div class="insight">
+          <svg class="insight-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <p>Чтобы подобрать этот пароль, понадобится в среднем <strong id="gen-time">—</strong>, даже если база сайта утечёт, а пароли в ней защищены устаревшим MD5.</p>
+          <button class="button button-ghost" type="button" id="gen-analyze">Подробнее <span aria-hidden="true">→</span></button>
+        </div>
+      </div>
+
+      <!-- Пароль из ключевого слова (1.2) -->
+      <div class="mode-panel" id="mode-keyword" hidden>
+        <div class="card kw-form">
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label" for="kw-site">Сайт</label>
+              <input class="input input-plain" type="text" id="kw-site" inputmode="url" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="например, vk.com">
+              <p class="field-hint" id="kw-site-hint">Для каждого сайта получится свой пароль.</p>
+            </div>
+            <div class="field">
+              <label class="field-label" for="kw-version">Версия</label>
+              <div class="stepper">
+                <button class="stepper-button" type="button" id="kw-version-down" aria-label="Уменьшить версию">−</button>
+                <input class="stepper-input" type="number" id="kw-version" min="1" max="999" step="1" value="1" inputmode="numeric" autocomplete="off">
+                <button class="stepper-button" type="button" id="kw-version-up" aria-label="Увеличить версию">+</button>
+              </div>
+              <p class="field-hint">Сменить пароль: +1</p>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="kw-word">Ключевое слово</label>
+            <input class="input input-plain" type="text" id="kw-word" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="например, кот">
+            <p class="field-hint">Слово, которое легко вспомнить. Можно своё для каждого сайта.</p>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="kw-master">Мастер-фраза</label>
+            <div class="input-wrap">
+              <input class="input" type="password" id="kw-master" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="несколько слов, которые знаете только вы">
+              <button class="icon-button input-toggle" type="button" id="kw-master-toggle" aria-label="Показать мастер-фразу" aria-pressed="false">
+                    <svg class="icon-eye" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <svg class="icon-eye-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
+            <p class="field-hint">Одна на все сайты. Нигде её не записывайте.</p>
+          </div>
+
+          <details class="requirements">
+            <summary>
+              <span class="requirements-title">Требования сайта</span>
+              <span class="requirements-summary" id="kw-req-summary">16 символов</span>
+              <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            </summary>
+            <div class="requirements-body">
+              <div class="length-setting">
+                <div class="length-head">
+                  <label for="kw-length">Длина пароля</label>
+                  <output id="kw-length-value" for="kw-length">16</output>
+                </div>
+                <input class="range" type="range" id="kw-length" min="8" max="64" step="1" value="16">
+                <div class="range-scale" aria-hidden="true"><span>8</span><span>64</span></div>
+              </div>
+
+              <fieldset class="charsets">
+                <legend>Из чего составить пароль</legend>
+                <div class="check-grid">
+                  <label class="check"><input type="checkbox" id="kw-lower" checked><span class="check-text">Строчные буквы<span class="sample">a–z</span></span></label>
+                  <label class="check"><input type="checkbox" id="kw-upper" checked><span class="check-text">Заглавные буквы<span class="sample">A–Z</span></span></label>
+                  <label class="check"><input type="checkbox" id="kw-digits" checked><span class="check-text">Цифры<span class="sample">0–9</span></span></label>
+                  <label class="check"><input type="checkbox" id="kw-symbols" checked><span class="check-text">Символы<span class="sample">!@#$%</span></span></label>
+                </div>
+                <label class="check check-wide"><input type="checkbox" id="kw-similar"><span class="check-text">Без похожих символов<span class="sample">I l 1 O 0 |</span></span></label>
+              </fieldset>
+              <p class="hint" id="kw-hint" role="status"></p>
+            </div>
+          </details>
+
+          <div class="form-actions">
+            <button class="button button-primary submit-button" type="button" id="kw-submit">
+              <span class="spinner" aria-hidden="true"></span>
+              <span class="button-label">Получить пароль</span>
+            </button>
+            <p class="form-error" id="kw-error" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="card result-card" id="kw-result" hidden>
+          <div class="password-row">
+            <p class="password" id="kw-password" aria-live="polite" aria-atomic="true"></p>
+            <div class="password-actions">
+              <button class="button button-primary copy-button" type="button" id="kw-copy">
+                <svg class="icon-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                <span class="button-label">Копировать</span>
+              </button>
+            </div>
+          </div>
+          <div class="strength" id="kw-strength-box">
+            <div class="meter" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+            <p class="strength-text"><strong id="kw-strength">—</strong><span class="dot" aria-hidden="true">·</span><span id="kw-bits">—</span></p>
+          </div>
+          <p class="result-note">Те же данные и требования дадут этот же пароль на любом устройстве.</p>
+        </div>
+
+        <p class="notice" id="kw-advice" hidden></p>
+
+        <div class="grid-2" id="kw-details" hidden>
+          <div class="card">
+            <h2>Что нужно угадать</h2>
+            <dl class="breakdown">
+              <div><dt>Ключевое слово</dt><dd id="kw-word-bits">—</dd></div>
+              <div><dt>Мастер-фраза</dt><dd id="kw-master-bits">—</dd></div>
+              <div class="breakdown-total"><dt>Вместе</dt><dd id="kw-total-bits">—</dd></div>
+            </dl>
+            <p class="formula" id="kw-formula"></p>
+            <p class="card-note" id="kw-model"></p>
+          </div>
+          <div class="card">
+            <h2>Сколько займёт подбор</h2>
+            <ul class="scenarios" id="kw-times"></ul>
+            <p class="card-note" id="kw-slowdown"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Русская фраза (1.3) -->
+      <div class="mode-panel" id="mode-phrase" hidden>
+        <div class="card result-card phrase-card">
+          <div class="phrase-toolbar">
+            <div class="mode-switch mode-switch-small" id="ph-words-switch" role="radiogroup" aria-label="Сколько слов во фразе">
+              <label class="mode-option"><input type="radio" name="ph-words" value="6" checked><span>6 слов</span></label>
+              <label class="mode-option"><input type="radio" name="ph-words" value="5"><span>5 слов</span></label>
+            </div>
+            <div class="password-actions">
+              <button class="icon-button" type="button" id="ph-refresh" aria-label="Другая фраза" title="Другая фраза">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              </button>
+              <button class="button button-primary copy-button" type="button" id="ph-copy">
+                <svg class="icon-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                <span class="button-label">Копировать</span>
+              </button>
+            </div>
+          </div>
+          <p class="phrase" id="ph-phrase" aria-live="polite" aria-atomic="true"></p>
+          <div class="strength" id="ph-strength-box">
+            <div class="meter" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+            <p class="strength-text"><strong id="ph-strength">—</strong><span class="dot" aria-hidden="true">·</span><span id="ph-bits">—</span></p>
+          </div>
+          <div class="layout-box">
+            <div class="layout-main">
+              <p class="layout-label">Если сайт не принимает русские буквы, наберите фразу, не переключая раскладку:</p>
+              <p class="layout-value" id="ph-layout"></p>
+            </div>
+            <button class="button button-ghost copy-button" type="button" id="ph-copy-layout">
+                <svg class="icon-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                <span class="button-label">Копировать</span>
+            </button>
+          </div>
+          <div class="phrase-footer">
+            <p class="result-note">Запомните фразу — она нигде не сохраняется. Букву ё пишем как е.</p>
+            <div class="phrase-actions">
+              <button class="button button-ghost" type="button" id="ph-learn">Выучить <span aria-hidden="true">→</span></button>
+              <button class="button button-ghost" type="button" id="ph-use">Сделать мастер-фразой <span aria-hidden="true">→</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <h2>Из чего сложена фраза</h2>
+            <dl class="breakdown" id="ph-breakdown"></dl>
+            <p class="formula" id="ph-formula"></p>
+            <p class="card-note">Взломщик может знать шаблон и все словари BastionBit, поэтому стойкость считается по числу возможных фраз, а не по буквам. Грамматика не добавляет и не отнимает ни бита: формы слов зависят только от выбранных слов и числа.</p>
+          </div>
+          <div class="card">
+            <h2>Сколько займёт подбор</h2>
+            <ul class="scenarios" id="ph-times"></ul>
+            <p class="card-note" id="ph-master-note"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ментальное правило (этап 4) -->
+      <div class="mode-panel" id="mode-rule" hidden>
+        <div class="card rule-card">
+          <div class="card-head">
+            <h2>Ваше правило</h2>
+            <button class="button button-ghost rule-new" type="button" id="rl-new">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Другое правило
+            </button>
+          </div>
+          <ol class="rule-steps" id="rl-steps" aria-label="Шаги правила"></ol>
+
+          <div class="rule-try">
+            <div class="field rule-site">
+              <label class="field-label" for="rl-site">Сайт</label>
+              <input class="input input-plain" type="text" id="rl-site" value="vk.com" inputmode="url" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="например, vk.com">
+              <p class="field-hint" id="rl-site-hint"></p>
+            </div>
+            <div class="rule-chain-box">
+              <p class="field-label">Как получается метка</p>
+              <ol class="rule-chain" id="rl-chain" aria-label="Как получается метка"></ol>
+            </div>
+          </div>
+
+          <div class="password-row">
+            <p class="password" id="rl-password" aria-live="polite" aria-atomic="true"></p>
+            <div class="password-actions">
+              <button class="button button-primary copy-button" type="button" id="rl-copy">
+                <svg class="icon-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                <span class="button-label">Копировать</span>
+              </button>
+            </div>
+          </div>
+          <div class="strength" id="rl-strength-box">
+            <div class="meter" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+            <p class="strength-text"><strong id="rl-strength">—</strong><span class="dot" aria-hidden="true">·</span><span id="rl-bits">—</span></p>
+          </div>
+          <p class="result-note">Подчёркнута метка — она зависит от сайта. Пароли везде разные, а помнить нужно одно правило. Но они связаны между собой.</p>
+        </div>
+
+        <div class="card leak-card">
+          <h2>Сколько утечек выдержит правило</h2>
+          <p class="card-lead">Взломщик знает, как устроены такие правила. Каждый утёкший пароль подсказывает ему, какое правило выбрано.</p>
+          <div class="field">
+            <label class="field-label" for="rl-sites">Сайты в порядке утечек</label>
+            <input class="input input-plain" type="text" id="rl-sites" value="vk.com, yandex.ru, gosuslugi.ru, ozon.ru, mail.ru" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false">
+            <p class="field-hint" id="rl-sites-hint"></p>
+          </div>
+          <ol class="leak-ladder" id="rl-ladder" aria-label="Стойкость после каждой утечки"></ol>
+          <p class="leak-verdict" id="rl-verdict" role="status" hidden></p>
+          <p class="card-note">У паролей режима «Из слова» такой связи нет: по паролю одного сайта нельзя вычислить пароль другого. Взломщику придётся перебирать мастер-фразу, а каждую попытку тормозит PBKDF2.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Анализатор ============ -->
+    <section class="panel" id="panel-analyzer" role="tabpanel" aria-labelledby="tab-analyzer" hidden>
+      <header class="panel-head">
+        <h1>Анализатор стойкости</h1>
+        <p class="lead">Проверьте свой пароль: детектор найдёт в нём слова, даты и клавиатурные дорожки и посчитает настоящую стойкость.</p>
+      </header>
+
+      <div class="card">
+        <label class="field-label" for="an-input">Пароль для проверки</label>
+        <div class="input-wrap">
+          <input class="input" type="password" id="an-input" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Введите пароль">
+          <button class="icon-button input-toggle" type="button" id="an-toggle" aria-label="Показать пароль" aria-pressed="false">
+            <svg class="icon-eye" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="icon-eye-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
+        <p class="privacy">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Пароль не покидает ваш браузер и нигде не сохраняется.
+        </p>
+
+        <details class="requirements personal" id="pd-box">
+          <summary>
+            <span class="requirements-title">Личные данные</span>
+            <span class="requirements-summary" id="pd-summary">не указаны</span>
+            <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="requirements-body personal-body">
+            <p class="personal-lead">Взломщик, который вас знает, проверит их первыми — и латиницей, и в другой раскладке. Данные нужны только для этой проверки: они не сохраняются и пропадут после перезагрузки страницы.</p>
+            <div class="personal-grid">
+              <div class="field">
+                <label class="field-label" for="pd-name">Имя</label>
+                <input class="input input-plain" type="text" id="pd-name" autocomplete="off" spellcheck="false" placeholder="например, Илья">
+              </div>
+              <div class="field">
+                <label class="field-label" for="pd-surname">Фамилия</label>
+                <input class="input input-plain" type="text" id="pd-surname" autocomplete="off" spellcheck="false">
+              </div>
+              <div class="field">
+                <label class="field-label" for="pd-birth">Дата рождения</label>
+                <input class="input input-plain" type="date" id="pd-birth" autocomplete="off" min="1900-01-01" max="2030-12-31">
+              </div>
+              <div class="field">
+                <label class="field-label" for="pd-pet">Кличка питомца</label>
+                <input class="input input-plain" type="text" id="pd-pet" autocomplete="off" spellcheck="false" placeholder="например, Барсик">
+              </div>
+              <div class="field">
+                <label class="field-label" for="pd-city">Город</label>
+                <input class="input input-plain" type="text" id="pd-city" autocomplete="off" spellcheck="false">
+              </div>
+              <div class="field">
+                <label class="field-label" for="pd-other">Другое</label>
+                <input class="input input-plain" type="text" id="pd-other" autocomplete="off" spellcheck="false" placeholder="через запятую: команда, улица…">
+              </div>
+            </div>
+            <div class="personal-actions">
+              <p class="field-hint">Слова — от 3 букв. Взломщик пробует их как есть, латиницей, в другой раскладке и задом наперёд, а дату — в разных видах записи.</p>
+              <button class="button button-ghost" type="button" id="pd-clear">Очистить</button>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <p class="empty-state" id="an-empty">Начните вводить пароль — оценка появится сразу.</p>
+
+      <div class="analysis" id="an-result" hidden>
+        <div class="card verdict-card" id="an-strength-box">
+          <div class="verdict-main">
+            <p class="verdict-caption" id="an-caption">Оценка с учётом хитростей</p>
+            <p class="verdict" id="an-verdict">—</p>
+            <p class="verdict-bits"><span id="an-bits">—</span> энтропии</p>
+            <p class="verdict-compare" id="an-compare-line"></p>
+          </div>
+          <div class="meter meter-large" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+        </div>
+
+        <div class="card detector-card">
+          <div class="card-head">
+            <h2>Что нашёл детектор</h2>
+            <p class="detector-status" id="an-status" role="status" hidden></p>
+          </div>
+          <p class="chunk-preview" id="an-preview" aria-hidden="true" hidden></p>
+          <ol class="chunk-list" id="an-chunks" aria-label="Найденные куски пароля" hidden></ol>
+          <p class="detector-nothing" id="an-nothing" hidden>Хитростей не найдено: оценка совпадает с формулой.</p>
+          <div class="real-box" id="an-real-box" hidden>
+            <p class="formula" id="an-real-formula"></p>
+            <p class="card-note">Слагаемые — стоимость кусков по порядку и 3 бита за каждый стык между ними: взломщик не знает, из каких кусков собран пароль.</p>
+          </div>
+          <ul class="advice-list" id="an-advice" aria-label="Советы" hidden></ul>
+        </div>
+
+        <div class="grid-2">
+          <div class="card breach-card" id="an-breach">
+            <h2>Есть ли пароль в утечках</h2>
+            <p class="card-lead">Сверим с базой Pwned Passwords — около двух миллиардов паролей из реальных утечек.</p>
+            <div class="breach-box" id="an-breach-box" data-state="idle">
+              <p class="breach-text" id="an-breach-text" role="status"></p>
+              <button class="button button-primary submit-button breach-button" type="button" id="an-breach-check">
+                <span class="spinner" aria-hidden="true"></span>
+                <span class="button-label">Проверить</span>
+              </button>
+            </div>
+            <p class="breach-hash" id="an-breach-hash" aria-label="Хеш SHA-1 пароля" hidden></p>
+            <p class="card-note" id="an-breach-meta"></p>
+            <details class="breach-how">
+              <summary>Как это работает</summary>
+              <ol>
+                <li>Браузер считает хеш SHA-1 пароля — 40 символов, по которым пароль не восстановить.</li>
+                <li>Сервису уходят только первые 5 символов. Такое же начало у хешей около 2 000 других паролей.</li>
+                <li>Сервис возвращает их все, а ваш хеш браузер ищет среди них сам. Пароль и даже его полный хеш никто не узнает.</li>
+              </ol>
+              <p>Данные — сервис <a href="https://haveibeenpwned.com/Passwords" target="_blank" rel="noopener noreferrer">Have I Been Pwned</a> (Troy Hunt). Для проверки нужен интернет.</p>
+            </details>
+          </div>
+          <div class="card similar-card" id="an-similar">
+            <h2>Похож ли на другие ваши пароли</h2>
+            <p class="card-lead">Если один пароль утечёт, взломщик первым делом попробует его небольшие изменения: Barsik2023! → Barsik2024!</p>
+            <ol class="similar-list" id="an-similar-list" aria-label="Другие ваши пароли"></ol>
+            <button class="button button-ghost similar-add" type="button" id="an-similar-add">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Добавить пароль
+            </button>
+            <p class="card-note">Пароли сравниваются здесь же, в браузере, и нигде не сохраняются. Мера похожести — расстояние Левенштейна.</p>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <h2>Сколько займёт подбор</h2>
+            <ul class="scenarios" id="an-times"></ul>
+          </div>
+          <div class="card">
+            <h2>Как считает формула</h2>
+            <dl class="stats">
+              <div><dt>Длина L</dt><dd id="an-length">—</dd></div>
+              <div><dt>Алфавит N</dt><dd id="an-pool">—</dd></div>
+            </dl>
+            <ul class="chips" id="an-classes" aria-label="Найденные наборы символов"></ul>
+            <p class="formula" id="an-formula"></p>
+            <p class="card-note">Формула считает каждый символ случайным, поэтому для паролей со словами, датами и «qwerty» сильно завышает стойкость.</p>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <h2>Срок годности</h2>
+            <p class="card-lead">Видеокарты ускоряются примерно вдвое каждые 2 года. Пароль просрочен, когда его подбирают быстрее чем за сутки.</p>
+            <ul class="scenarios scenarios-compact" id="an-expiry"></ul>
+            <div class="chart-box chart-box-tall" id="an-expiry-box"><canvas id="an-expiry-chart" role="img" aria-label="Время подбора на 40 лет вперёд"></canvas></div>
+            <p class="card-note" id="an-quantum"></p>
+          </div>
+          <div class="card">
+            <h2>Сравнение оценок</h2>
+            <p class="card-lead">Формула, детектор BastionBit и библиотека zxcvbn, которой проверяют пароли многие сайты.</p>
+            <div class="chart-box chart-box-tall" id="an-compare-box">
+              <canvas id="an-compare-chart" role="img" aria-label="Сравнение оценок"></canvas>
+            </div>
+            <ul class="level-legend" aria-label="Фон графика — шкала оценок">
+              <li data-level="0">очень слабый</li>
+              <li data-level="1">слабый</li>
+              <li data-level="2">средний</li>
+              <li data-level="3">сильный</li>
+              <li data-level="4">очень сильный</li>
+            </ul>
+            <p class="card-note" id="an-zxcvbn"></p>
+          </div>
+        </div>
+
+        <p class="notice"><strong>Важно.</strong> Детектор знает о вас только то, что вы указали в «Личных данных». Без них имя, дата рождения или кличка питомца для него — обычные слова и числа, а взломщик, который вас знает, проверит их первыми.</p>
+      </div>
+    </section>
+
+    <!-- ============ Тренажёр (этап 3) ============ -->
+    <section class="panel" id="panel-trainer" role="tabpanel" aria-labelledby="tab-trainer" hidden>
+      <header class="panel-head">
+        <h1>Тренажёр</h1>
+        <p class="lead" id="tr-lead">Выучите пароль наизусть по расписанию повторений. Сам пароль нигде не сохраняется.</p>
+      </header>
+
+      <div class="mode-switch" id="tr-modes" role="radiogroup" aria-label="Что делать">
+        <label class="mode-option"><input type="radio" name="tr-mode" value="memory" checked><span>Запоминание</span></label>
+        <label class="mode-option"><input type="radio" name="tr-mode" value="game"><span>Взломай сам</span></label>
+      </div>
+
+      <!-- Запоминание по интервалам -->
+      <div class="mode-panel" id="tr-memory">
+        <p class="notice notice-warn" id="mem-storage" hidden></p>
+
+        <div class="list-head" id="mem-list-head" hidden>
+          <h2>Ваши пароли</h2>
+          <p class="list-summary" id="mem-summary"></p>
+        </div>
+        <ul class="memory-list" id="mem-list"></ul>
+
+        <div class="card memory-add" id="mem-add">
+          <h2>Новый пароль</h2>
+          <p class="card-lead" id="mem-add-lead">Добавьте пароль или фразу, которую хотите помнить наизусть.</p>
+          <div class="field-row field-row-even">
+            <div class="field">
+              <label class="field-label" for="mem-name">Название</label>
+              <input class="input input-plain" type="text" id="mem-name" maxlength="40" autocomplete="off" spellcheck="false" placeholder="например, Почта">
+            </div>
+            <div class="field">
+              <label class="field-label" for="mem-password">Пароль или фраза</label>
+              <div class="input-wrap">
+                <input class="input" type="password" id="mem-password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Введите или придумайте">
+                <button class="icon-button input-toggle" type="button" id="mem-toggle" aria-label="Показать пароль" aria-pressed="false">
+                    <svg class="icon-eye" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <svg class="icon-eye-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <p class="field-hint memory-strength" id="mem-strength" aria-live="polite"></p>
+          <div class="form-actions">
+            <button class="button button-primary submit-button" type="button" id="mem-submit">
+              <span class="spinner" aria-hidden="true"></span>
+              <span class="button-label">Начать учить</span>
+            </button>
+            <button class="button button-ghost" type="button" id="mem-phrase">Придумать фразу</button>
+            <p class="form-error" id="mem-error" role="alert"></p>
+          </div>
+          <p class="result-note">Сохранятся только название, соль и хеш. Сам пароль — нигде, даже в этом браузере.</p>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <h2>Расписание</h2>
+            <p class="card-lead">Если начать сегодня:</p>
+            <ol class="timeline" id="mem-plan"></ol>
+            <p class="card-note">Верно с первой попытки — следующий перерыв длиннее. Ошибка — шаг назад: повторить придётся раньше.</p>
+          </div>
+          <div class="card">
+            <h2>Как проверяется пароль</h2>
+            <p class="formula">h = PBKDF2-SHA-256(пароль, соль, 600&nbsp;000)</p>
+            <p class="card-text">Тренажёр считает хеш от того, что вы ввели, и сравнивает его с сохранённым. Совпали — значит, пароль верный. Обратно из хеша пароль не получить.</p>
+            <p class="card-note">Если кто-то скопирует данные тренажёра, перебирать пароли ему придётся медленно: около 15&nbsp;000 попыток в секунду на мощной видеокарте.</p>
+            <details class="stored" id="mem-stored" hidden>
+              <summary>Что сейчас сохранено</summary>
+              <div class="stored-body"><pre class="stored-json" id="mem-stored-json"></pre></div>
+            </details>
+          </div>
+        </div>
+      </div>
+
+      <!-- Игра «Взломай сам» -->
+      <div class="mode-panel" id="tr-game" hidden>
+        <ol class="game-steps" id="game-steps" aria-label="Уровни игры">
+          <li class="game-step"><span class="game-step-num">1</span><span class="game-step-name">Популярный</span></li>
+          <li class="game-step"><span class="game-step-num">2</span><span class="game-step-name">PIN-код</span></li>
+          <li class="game-step"><span class="game-step-num">3</span><span class="game-step-name">Личные данные</span></li>
+          <li class="game-step"><span class="game-step-num">4</span><span class="game-step-name">Случайный</span></li>
+        </ol>
+
+        <div class="card game-intro" id="game-intro">
+          <h2>Побудьте взломщиком</h2>
+          <p class="card-text">Четыре пароля — от популярного до случайного. Попыток мало, как на настоящем сайте. После каждого уровня вы увидите, сколько попыток понадобилось бы программе-взломщику.</p>
+          <button class="button button-primary" type="button" id="game-start">Начать игру</button>
+        </div>
+
+        <div class="card game-card" id="game-card" hidden>
+          <div class="game-head">
+            <div class="game-head-main">
+              <p class="game-level" id="game-level"></p>
+              <h2 id="game-title"></h2>
+            </div>
+            <div class="game-attempts">
+              <p class="game-attempts-text" id="game-attempts"></p>
+              <span class="game-pips" id="game-pips" aria-hidden="true"></span>
+            </div>
+          </div>
+          <p class="game-task" id="game-task"></p>
+
+          <div class="profile" id="game-profile" hidden>
+            <span class="profile-avatar" id="game-avatar" aria-hidden="true"></span>
+            <div class="profile-body">
+              <p class="profile-name" id="game-person"></p>
+              <ul class="profile-facts" id="game-facts"></ul>
+            </div>
+          </div>
+
+          <div class="game-space">
+            <div class="game-space-head">
+              <span>Осталось вариантов</span>
+              <b id="game-space-count"></b>
+            </div>
+            <div class="game-space-bar" aria-hidden="true"><span class="game-space-fill" id="game-space-fill"></span></div>
+            <p class="game-space-note" id="game-space-note"></p>
+          </div>
+
+          <div class="game-play" id="game-play">
+            <div class="game-input-row">
+              <input class="input input-plain game-input" type="text" id="game-input" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Ваша догадка">
+              <button class="button button-primary" type="button" id="game-guess">Проверить</button>
+            </div>
+            <p class="game-feedback" id="game-feedback" role="status"></p>
+            <ul class="game-hints" id="game-hints"></ul>
+            <ul class="game-guesses" id="game-guesses" aria-label="Ваши попытки"></ul>
+            <button class="link-button game-giveup" type="button" id="game-giveup">Сдаться и посмотреть ответ</button>
+          </div>
+
+          <div class="game-result" id="game-result" hidden>
+            <p class="game-verdict" id="game-verdict"></p>
+            <p class="game-answer">Пароль: <span class="password game-secret" id="game-secret"></span></p>
+            <div class="machine">
+              <p class="machine-title">Программа-взломщик</p>
+              <p class="machine-try" id="game-machine-try"></p>
+              <p class="machine-count" id="game-machine-count"></p>
+            </div>
+            <p class="game-lesson" id="game-lesson"></p>
+            <div class="form-actions">
+              <button class="button button-primary" type="button" id="game-next"><span class="button-label">Следующий уровень</span> <span aria-hidden="true">→</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card game-summary" id="game-summary" hidden>
+          <h2>Итоги</h2>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th>Уровень</th><th class="num">Вариантов</th><th class="num">Бит</th><th>Вы</th><th>Программа</th></tr></thead>
+              <tbody id="game-table"></tbody>
+            </table>
+          </div>
+          <p class="card-note">Стойкость пароля — не «сложный вид», а число вариантов, которые придётся перебрать. Каждый бит удваивает работу взломщика, а личные данные и популярные пароли он проверит первыми.</p>
+          <div class="form-actions">
+            <button class="button button-primary" type="button" id="game-restart">Сыграть ещё раз</button>
+          </div>
+        </div>
+      </div>
+
+      <template id="mem-card-template">
+        <li class="card memory-card" tabindex="-1">
+          <div class="memory-head">
+            <h3 class="memory-name"></h3>
+            <span class="memory-state"></span>
+          </div>
+          <ol class="memory-steps" role="img">
+            <li><span class="memory-bar"></span><span class="memory-day">1 день</span></li>
+            <li><span class="memory-bar"></span><span class="memory-day">3 дня</span></li>
+            <li><span class="memory-bar"></span><span class="memory-day">7 дней</span></li>
+            <li><span class="memory-bar"></span><span class="memory-day">14 дней</span></li>
+            <li><span class="memory-bar"></span><span class="memory-day">30 дней</span></li>
+          </ol>
+          <p class="memory-when"></p>
+
+          <div class="memory-learn" hidden>
+            <div class="memory-secret-row">
+              <p class="password memory-secret"></p>
+              <button class="button button-ghost memory-peek" type="button">Скрыть</button>
+            </div>
+          </div>
+
+          <div class="memory-check" hidden>
+            <div class="memory-check-row">
+              <div class="input-wrap">
+                <input class="input memory-input" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Введите по памяти" aria-label="Пароль по памяти">
+                <button class="icon-button input-toggle memory-toggle" type="button" aria-label="Показать введённое" aria-pressed="false">
+                    <svg class="icon-eye" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <svg class="icon-eye-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                </button>
+              </div>
+              <button class="button button-primary submit-button memory-submit" type="button">
+                <span class="spinner" aria-hidden="true"></span>
+                <span class="button-label">Проверить</span>
+              </button>
+            </div>
+            <p class="memory-caps" hidden>Включён Caps Lock — пароль может не совпасть</p>
+            <p class="memory-streak" role="img" hidden><span></span><span></span><span></span></p>
+          </div>
+          <p class="memory-message" role="status"></p>
+
+          <div class="memory-actions">
+            <button class="button button-ghost memory-practice" type="button">Потренироваться</button>
+            <button class="link-button memory-delete" type="button">Удалить</button>
+          </div>
+        </li>
+      </template>
+    </section>
+
+    <!-- ============ Теория ============ -->
+    <section class="panel" id="panel-theory" role="tabpanel" aria-labelledby="tab-theory" hidden>
+      <header class="panel-head">
+        <h1>Теория</h1>
+        <p class="lead">Как BastionBit считает стойкость пароля — простыми словами.</p>
+      </header>
+
+      <article class="prose">
+        <section>
+          <h2>1. Энтропия — мера непредсказуемости</h2>
+          <p>Энтропия <i>H</i> показывает, сколько вариантов придётся перебрать взломщику. Её измеряют в битах: каждый бит удваивает число вариантов.</p>
+          <p class="math"><i>H</i> = <i>L</i> · log<sub>2</sub> <i>N</i></p>
+          <p><i>L</i> — длина пароля, <i>N</i> — размер алфавита: сколько разных символов могло стоять на каждом месте.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Набор символов</th><th>Примеры</th><th class="num">N</th></tr></thead>
+              <tbody>
+                <tr><td>Строчные латинские</td><td><code>a–z</code></td><td class="num">26</td></tr>
+                <tr><td>Заглавные латинские</td><td><code>A–Z</code></td><td class="num">26</td></tr>
+                <tr><td>Цифры</td><td><code>0–9</code></td><td class="num">10</td></tr>
+                <tr><td>Символы</td><td><code>! ? @ # $ % …</code></td><td class="num">32</td></tr>
+                <tr><td>Строчные русские</td><td><code>а–я, ё</code></td><td class="num">33</td></tr>
+                <tr><td>Заглавные русские</td><td><code>А–Я, Ё</code></td><td class="num">33</td></tr>
+                <tr><td>Пробел</td><td>—</td><td class="num">1</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Пример: <code>Password1!</code> — 10 символов из 26 + 26 + 10 + 32 = 94 возможных, поэтому <span class="nowrap"><i>H</i> = 10 · log<sub>2</sub>&nbsp;94 ≈ 65,5&nbsp;бита</span>.</p>
+        </section>
+
+        <section>
+          <h2>2. Время подбора</h2>
+          <p class="math"><i>T</i> = 2<sup><i>H</i></sup> / (2<i>V</i>)</p>
+          <p>Всего вариантов 2<sup><i>H</i></sup>, а нужный в среднем находится на половине перебора. <i>V</i> — скорость: сколько вариантов в секунду проверяет взломщик.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Ситуация</th><th class="num">V, попыток в секунду</th></tr></thead>
+              <tbody>
+                <tr><td>Подбор через форму входа (сайт ограничивает попытки)</td><td class="num">10</td></tr>
+                <tr><td>Утечка базы, пароли защищены bcrypt</td><td class="num">≈ 2·10<sup>5</sup></td></tr>
+                <tr><td>Утечка базы, пароли защищены MD5</td><td class="num">≈ 1,6·10<sup>11</sup></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="muted">Скорости — ориентиры для одной видеокарты RTX 4090 по тестам программы hashcat (для bcrypt — с параметром cost 5).</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Энтропия</th><th>Оценка</th></tr></thead>
+              <tbody>
+                <tr><td>меньше 28 бит</td><td>Очень слабый</td></tr>
+                <tr><td>28–35 бит</td><td>Слабый</td></tr>
+                <tr><td>36–59 бит</td><td>Средний</td></tr>
+                <tr><td>60–127 бит</td><td>Сильный</td></tr>
+                <tr><td>128 бит и больше</td><td>Очень сильный</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section>
+          <h2>3. Почему генератор действительно случайный</h2>
+          <p>BastionBit берёт случайные числа из <code>crypto.getRandomValues</code> — криптографического генератора браузера. Обычный <code>Math.random</code> для паролей не годится: по нескольким его результатам можно предсказать следующие.</p>
+          <p>Чтобы каждый символ выпадал одинаково часто, «лишние» случайные числа отбрасываются (метод отбора, rejection sampling). Без этого первые символы алфавита выпадали бы чуть чаще остальных.</p>
+        </section>
+
+        <section>
+          <h2>4. Точная энтропия генератора</h2>
+          <p>Генератор гарантирует, что в пароле есть хотя бы один символ из каждого выбранного набора. Таких паролей немного меньше, чем <i>N</i><sup><i>L</i></sup>, поэтому BastionBit считает их число точно — по формуле включений-исключений:</p>
+          <p class="math">|<i>A</i>| = Σ<sub><i>S</i> ⊆ <i>K</i></sub> (−1)<sup>|<i>S</i>|</sup> · (<i>N</i> − <i>N<sub>S</sub></i>)<sup><i>L</i></sup></p>
+          <p>Сумма идёт по всем подмножествам <i>S</i> выбранных наборов <i>K</i>, а <i>N<sub>S</sub></i> — сколько символов в наборах из <i>S</i>. Энтропия генератора равна log<sub>2</sub> |<i>A</i>|.</p>
+          <p>Поэтому генератор и анализатор могут показать для одного пароля немного разные числа: анализатор видит только готовую строку, а генератор знает, как она получена.</p>
+        </section>
+
+        <section>
+          <h2>5. Пароль из ключевого слова</h2>
+          <p>Такой пароль нигде не хранится: BastionBit каждый раз вычисляет его заново из сайта, ключевого слова и мастер-фразы. Одинаковые данные дают одинаковый пароль на любом устройстве.</p>
+          <p class="math"><i>K</i> = PBKDF2(<i>фраза</i> ‖ <i>слово</i>, <i>сайт</i> ‖ <i>версия</i>, 600 000)</p>
+          <p>Знак ‖ означает «записать друг за другом». Функция PBKDF2 на основе SHA-256 600 000 раз подряд перемешивает мастер-фразу и ключевое слово. Сайт и версия служат <i>солью</i>: из-за неё у каждого сайта свой пароль. Получается ключ <i>K</i> из 32 байтов.</p>
+          <p>Затем функция HKDF растягивает ключ в длинный поток байтов, и из него символы выбираются тем же методом отбора, что и в случайном генераторе. HKDF учитывает требования сайта — длину и наборы символов, поэтому разные требования дают независимые пароли.</p>
+          <p>Перед расчётом ввод приводится к одному виду: большие буквы становятся маленькими, <i>ё</i> — <i>е</i>, лишние пробелы убираются, а от адреса сайта остаётся только домен: <code>https://www.VK.com/feed</code> → <code>vk.com</code>. Поэтому случайная заглавная буква не изменит пароль.</p>
+          <p><b>Версия</b> тоже входит в соль. Если сайт просит сменить пароль, увеличьте её на 1: пароль станет совсем другим, а слова останутся прежними.</p>
+        </section>
+
+        <section>
+          <h2>6. Стойкость пароля из ключевого слова</h2>
+          <p>Пароль выглядит случайным, но честнее считать, что взломщик знает, как устроен BastionBit, и название сайта (принцип Керкгоффса). Тогда угадывать ему нужно только ключевое слово и мастер-фразу, и стойкость не больше, чем у них:</p>
+          <p class="math"><i>H</i> = min(<i>H</i><sub>пароля</sub>, <i>H</i><sub>слова</sub> + <i>H</i><sub>фразы</sub>)</p>
+          <p>Каждое слово BastionBit оценивает не больше чем в log<sub>2</sub> 50 000 ≈ 15,6 бита — как слово из словаря на 50 000 слов. Цифры и символы считаются по обычной формуле <i>L</i> · log<sub>2</sub> <i>N</i>.</p>
+          <p>Зато каждая попытка взломщика обходится в 600 000 повторов хеш-функции — это примерно log<sub>2</sub> 600 000 ≈ 19,2 бита запаса. Видеокарта RTX 4090 проверяет около 1,5·10<sup>4</sup> вариантов в секунду вместо 1,6·10<sup>11</sup> для MD5:</p>
+          <p class="math"><i>T</i> = 2<sup><i>H</i></sup> / (2 · min(<i>V</i>, <i>V</i><sub>PBKDF2</sub>))</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Ключевое слово «кот» и…</th><th class="num">H</th><th class="num">Подбор при утечке базы</th></tr></thead>
+              <tbody>
+                <tr><td>без мастер-фразы</td><td class="num">15,1 бита</td><td class="num">≈ 1 секунда</td></tr>
+                <tr><td>мастер-фраза «синий чайник»</td><td class="num">46,4 бита</td><td class="num">≈ 95 лет</td></tr>
+                <tr><td>мастер-фраза «синий чайник поёт ночью»</td><td class="num">77,6 бита</td><td class="num">дольше возраста Вселенной</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Без замедления те же 46,4 бита при утечке базы с MD5 подобрали бы примерно за 5 минут.</p>
+          <p><b>Слабое место:</b> кто узнает мастер-фразу и ключевые слова, тот узнает все пароли. Поэтому мастер-фразу нигде не записывают. А если в неё взята известная цитата, настоящая стойкость ниже оценки: цитаты и строчки песен взломщики берут из готовых сборников.</p>
+        </section>
+
+        <section>
+          <h2>7. Фраза из слов</h2>
+          <p>Фраза строится по шаблону «какой — кто — что сделал — сколько — какой — что»: <i>«Фиолетовый еж продал 47 зеленых чайников»</i>. Каждое слово выбирается случайно из своего словаря, число — от 1 до 100. Необычную сценку легко представить, поэтому такую фразу запомнить проще, чем набор символов. На этом построен известный приём запоминания «персонаж — действие — предмет».</p>
+          <p class="math"><i>H</i> = log<sub>2</sub>(<i>A</i> · <i>S</i> · <i>V</i> · 100 · <i>A</i> · <i>P</i>)</p>
+          <p><i>A</i> — прилагательные (<span data-phrase="adjectives">622</span>), <i>S</i> — кто (<span data-phrase="subjects">645</span>), <i>V</i> — действия (<span data-phrase="verbs">274</span>), <i>P</i> — предметы (<span data-phrase="objects">1124</span>). Фраза из 6 слов даёт <span data-phrase="bits6">52,8 бита</span>, из 5 слов, без второго прилагательного, — <span data-phrase="bits5">43,5 бита</span>.</p>
+          <p>Грамматика энтропию не меняет: род прилагательного и глагола зависит от слова «кто», а форма предмета — от числа.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Число</th><th>Форма — как после слова</th><th>Пример</th></tr></thead>
+              <tbody>
+                <tr><td>1, 21, 31…</td><td>«один»</td><td>1 чайник, 21 книгу</td></tr>
+                <tr><td>2–4, 22–24…</td><td>«два»</td><td>2 чайника, 3 зеленые книги</td></tr>
+                <tr><td>5–20, 25–30… и 100</td><td>«пять»</td><td>5 чайников, 11 книг</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Для сравнения: 8 случайных символов из 94 дают 52,4 бита, 4 слова из списка Diceware — 51,7 бита. У фразы из 6 слов примерно столько же, а запомнить её гораздо легче.</p>
+          <p>Если сайт не принимает русские буквы, фразу набирают в английской раскладке: «пароль» превращается в <code>gfhjkm</code>. Стойкость от этого не растёт — этот приём взломщик тоже знает.</p>
+          <p>Словари составлены вручную и проверены по открытому словарю русского языка OpenCorpora: в них нет имён, редких и грубых слов, а все предметы можно сосчитать.</p>
+        </section>
+
+        <section>
+          <h2>8. Чего не видит формула</h2>
+          <p>Формула считает каждый символ случайным. Но люди выбирают пароли не случайно: <code>Password1!</code> угадывается за секунды, хотя по формуле у него 65,5 бита. Поэтому в анализаторе BastionBit работает детектор хитростей — о нём следующий раздел.</p>
+        </section>
+
+        <section>
+          <h2>9. Детектор хитростей</h2>
+          <p>Детектор ищет в пароле куски, которые взломщик перебирает в первую очередь, и считает, сколько вариантов ему на самом деле придётся проверить. Цена куска — log<sub>2</sub> числа таких вариантов.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Хитрость</th><th>Пример</th><th>Цена куска</th></tr></thead>
+              <tbody>
+                <tr><td>Популярный пароль</td><td><code>qwerty</code>, <code>dragon</code></td><td>log<sub>2</sub> <i>r</i>, <i>r</i> — место среди 10 000 популярных паролей</td></tr>
+                <tr><td>Частое слово</td><td><code>привет</code>, <code>monkey</code></td><td>log<sub>2</sub> <i>r</i> среди 47 000 русских или 46 000 английских слов</td></tr>
+                <tr><td>Имя, фамилия, город</td><td><code>gjyjvfhtdf</code>, <code>krasnoyarsk</code></td><td>log<sub>2</sub> 56 857 ≈ 15,8 бита — одно из 57 000 имён, фамилий, отчеств и названий мест</td></tr>
+                <tr><td>Замены символов</td><td><code>p@$$w0rd</code></td><td>+1 бит за каждый вид замены</td></tr>
+                <tr><td>Другая раскладка, транслит, задом наперёд</td><td><code>gfhjkm</code>, <code>parol</code>, <code>drowssap</code></td><td>+1 бит</td></tr>
+                <tr><td>Заглавные буквы</td><td><code>Password</code>, <code>PASSWORD</code></td><td>+1 бит; любая смесь — log<sub>2</sub> числа вариантов</td></tr>
+                <tr><td>Дата</td><td><code>15051998</code>, <code>15.05.98</code></td><td>log<sub>2</sub>(365 · 81) ≈ 14,9 бита, с разделителем +2</td></tr>
+                <tr><td>Год</td><td><code>1998</code></td><td>log<sub>2</sub> 81 ≈ 6,3 бита — годы с 1950 по 2030</td></tr>
+                <tr><td>Клавиатурная дорожка</td><td><code>qwerty</code>, <code>1qaz2wsx</code>, <code>йцукен</code></td><td>старт, длина и повороты — как в zxcvbn</td></tr>
+                <tr><td>Повтор</td><td><code>aaaa</code>, <code>abcabc</code></td><td>цена куска + log<sub>2</sub> числа повторов</td></tr>
+                <tr><td>Последовательность</td><td><code>1234</code>, <code>abcd</code></td><td>log<sub>2</sub>(старт · длина), обратная +1</td></tr>
+                <tr><td>Фраза генератора</td><td><i>«синий еж продал…»</i></td><td>точная стойкость по словарям BastionBit</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Пароль делится на куски так, чтобы сумма была наименьшей, — это задача динамического программирования. Символы вне хитростей считаются по обычной формуле, но с алфавитом только этих символов:</p>
+          <p class="math"><i>H</i> = <i>H</i><sub>1</sub> + <i>H</i><sub>2</sub> + … + <i>H<sub>k</sub></i> + 3 · (<i>k</i> − 1) ≤ <i>L</i> · log<sub>2</sub> <i>N</i></p>
+          <p>3 бита за каждый стык — плата за то, что взломщик не знает, из каких кусков и в каком порядке собран пароль. Чтобы не принимать случайные пароли за хитрые, действуют три правила:</p>
+          <ul>
+            <li>Слово из трёх букв стоит не меньше log<sub>2</sub> 3046 ≈ 11,6 бита — столько таких слов в словарях. Иначе в любом случайном пароле нашлись бы <code>the</code> и <code>кот</code>.</li>
+            <li>Заглавные буквы — только как обычно пишут: первая, все или ни одной. Любую смесь детектор считает только у слов от шести букв.</li>
+            <li>Находки засчитываются, если снижают оценку хотя бы на 10 % и на 8 бит, а если покрывают не меньше 3/4 пароля — на 2 бита. Меньшая экономия — случайное совпадение.</li>
+          </ul>
+          <p>Пример: <code>Password1!</code> — второй по популярности пароль с заглавной буквой (1 + 1 = 2 бита) и два символа из 42 возможных (2 · log<sub>2</sub>&nbsp;42 ≈ 10,8 бита). Вместе <span class="nowrap"><i>H</i> = 2 + 10,8 + 3 ≈ 15,8 бита</span> вместо 65,5 — при утечке базы с MD5 его подберут меньше чем за секунду.</p>
+        </section>
+
+        <section>
+          <h2>10. Срок годности пароля</h2>
+          <p>Видеокарты становятся быстрее: скорость перебора удваивается примерно каждые 2 года. Через <i>t</i> лет она станет такой:</p>
+          <p class="math"><i>V</i>(<i>t</i>) = <i>V</i><sub>0</sub> · 2<sup><i>t</i>/2</sup></p>
+          <p>Пароль «просрочен», когда его подбирают быстрее чем за сутки — 86 400 секунд. Подставим <i>V</i>(<i>t</i>) в формулу времени подбора 2<sup><i>H</i></sup> / (2<i>V</i>) = 86 400 и выразим <i>t</i>:</p>
+          <p class="math"><i>t</i> = 2 · (<i>H</i> − 1 − log<sub>2</sub> <i>V</i><sub>0</sub> − log<sub>2</sub> 86 400)</p>
+          <p>Пример: пароль на 60 бит при утечке базы с MD5 (<i>V</i><sub>0</sub> ≈ 1,6·10<sup>11</sup>) продержится <span class="nowrap"><i>t</i> = 2 · (60 − 1 − 37,2 − 16,4) ≈ 10,8 года</span> — примерно до 2037 года. Если <i>t</i> ≤ 0, пароль подбирают быстрее суток уже сейчас.</p>
+          <p><b>Квантовые компьютеры.</b> Алгоритм Гровера находит нужный вариант примерно за √(2<sup><i>H</i></sup>) = 2<sup><i>H</i>/2</sup> шагов, поэтому для квантового взломщика стойкость вдвое меньше: <i>H</i><sub>кв</sub> = <i>H</i> / 2. Таких компьютеров пока нет, но для защиты на десятилетия вперёд советуют от 128 бит.</p>
+        </section>
+
+        <section>
+          <h2>11. Сравнение с zxcvbn</h2>
+          <p>zxcvbn — открытая библиотека Dropbox, которой проверяют пароли многие сайты. Она тоже ищет слова, даты и дорожки, но знает только английские словари. Её число попыток BastionBit переводит в биты: <i>H</i> = log<sub>2</sub>(попыток).</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Пароль</th><th class="num">Формула</th><th class="num">BastionBit</th><th class="num">zxcvbn</th></tr></thead>
+              <tbody>
+                <tr><td><code>Password1!</code></td><td class="num">65,5</td><td class="num">15,8</td><td class="num">14,2</td></tr>
+                <tr><td><code>gfhjkm</code></td><td class="num">28,2</td><td class="num">6,8</td><td class="num">6,5</td></tr>
+                <tr><td><code>привет123</code></td><td class="num">48,8</td><td class="num">12,6</td><td class="num">26,6</td></tr>
+                <tr><td><code>Ghbdtn2024!</code></td><td class="num">72,1</td><td class="num">25,4</td><td class="num">26,2</td></tr>
+                <tr><td><code>correcthorsebatterystaple</code></td><td class="num">117,5</td><td class="num">55,1</td><td class="num">48,0</td></tr>
+                <tr><td><code>x7#Kq9!mZ2$vL8@n</code></td><td class="num">104,9</td><td class="num">104,9</td><td class="num">53,2</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>На английских паролях оценки близки. Русские слова zxcvbn видит как случайные буквы (<code>привет123</code>), а случайные символы, наоборот, оценивает осторожно — по 10 вариантов на символ. Как обе оценки справляются с миллионом настоящих паролей из утечек — в разделе 19.</p>
+        </section>
+
+        <section>
+          <h2>12. Интервальные повторения</h2>
+          <p>Память забывает по экспоненте. Через время <i>t</i> после повторения вспомнить удаётся примерно с вероятностью</p>
+          <p class="math"><i>R</i> = e<sup>−<i>t</i> / <i>S</i></sup></p>
+          <p><i>S</i> — прочность памяти. Каждое удачное повторение увеличивает <i>S</i>, поэтому следующий перерыв можно сделать длиннее. Это кривая забывания Германа Эббингауза (1885); на ней построены Anki и другие программы для заучивания.</p>
+          <p>Тренажёр сначала просит ввести новый пароль 3 раза подряд, а потом повторяет его через 1, 3, 7, 14 и 30 дней — каждый перерыв в 2–3 раза длиннее предыдущего. Как в системе карточек Лейтнера, верный ответ с первой попытки переводит пароль на следующий шаг, а ошибка — на шаг назад: следующий перерыв станет короче.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Повторение</th><th class="num">Перерыв</th><th class="num">День, если без ошибок</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td class="num">1 день</td><td class="num">1</td></tr>
+                <tr><td>2</td><td class="num">3 дня</td><td class="num">4</td></tr>
+                <tr><td>3</td><td class="num">7 дней</td><td class="num">11</td></tr>
+                <tr><td>4</td><td class="num">14 дней</td><td class="num">25</td></tr>
+                <tr><td>5 — выучен</td><td class="num">30 дней</td><td class="num">55</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Без ошибок пароль выучен за 55 дней — всего 8 вводов.</p>
+        </section>
+
+        <section>
+          <h2>13. Как тренажёр проверяет пароль, не храня его</h2>
+          <p>В хранилище браузера (localStorage) лежат только название, случайная соль <i>s</i> (16 байт) и хеш:</p>
+          <p class="math"><i>h</i> = PBKDF2-SHA-256(пароль, <i>s</i>, 600 000)</p>
+          <p>Чтобы проверить ответ, тренажёр считает такой же хеш от введённого и сравнивает с сохранённым. Хеш-функция односторонняя: по <i>h</i> пароль не вычислить, можно только перебирать варианты. Пока пароль заучивается, его текст есть лишь в памяти открытой страницы; после третьего верного ввода тренажёр его забывает.</p>
+          <p>Соль у каждой карточки своя. Поэтому одинаковые пароли дают разные хеши, а заранее посчитанные таблицы хешей популярных паролей взломщику не помогут.</p>
+          <p>600 000 повторов замедляют перебор: видеокарта RTX 4090 проверяет около 1,5·10<sup>4</sup> вариантов в секунду. Если кто-то скопирует данные тренажёра, слабый пароль на 30 бит он подберёт примерно за <span class="nowrap">2<sup>30</sup> / (2 · 1,5·10<sup>4</sup>) ≈ 10 часов</span>, а случайный из 16 символов — за 4·10<sup>19</sup> лет.</p>
+        </section>
+
+        <section>
+          <h2>14. «Взломай сам»: биты и подсказки</h2>
+          <p>Энтропия — это число вопросов «да или нет», которые нужно задать, чтобы наверняка найти пароль среди <i>N</i> вариантов:</p>
+          <p class="math"><i>H</i> = log<sub>2</sub> <i>N</i></p>
+          <p>Ответ «больше» или «меньше» в уровне с PIN-кодом — как раз такой вопрос: он делит оставшиеся варианты пополам и даёт ровно 1 бит. PIN-кодов 10 000, это log<sub>2</sub> 10 000 ≈ 13,3 бита, поэтому всегда хватает ⌈13,3⌉ = 14 попыток.</p>
+          <p>Любая подсказка — тоже информация. Если из <i>N</i><sub>до</sub> вариантов она оставляет <i>N</i><sub>после</sub>, то отнимает</p>
+          <p class="math">Δ<i>H</i> = log<sub>2</sub>(<i>N</i><sub>до</sub> / <i>N</i><sub>после</sub>)</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Уровень</th><th class="num">Вариантов</th><th class="num">Бит</th></tr></thead>
+              <tbody>
+                <tr><td>Популярный пароль</td><td class="num">20</td><td class="num">4,3</td></tr>
+                <tr><td>PIN-код</td><td class="num">10 000</td><td class="num">13,3</td></tr>
+                <tr><td>Личные данные</td><td class="num">22</td><td class="num">4,5</td></tr>
+                <tr><td>Случайный пароль из 8 символов</td><td class="num">2,8·10<sup>15</sup></td><td class="num">51,3</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Формула <i>L</i> · log<sub>2</sub> <i>N</i> даёт паролю <code>barsik2001</code> 10 · log<sub>2</sub> 36 ≈ 51,7 бита — столько же, сколько случайному из 8 символов. Но взломщик, который знает кличку кота и год рождения, найдёт его среди 22 вариантов. Поэтому стойкость считают по тому, как пароль угадывают на самом деле.</p>
+        </section>
+
+        <section>
+          <h2>15. Ментальное правило и устойчивость к утечке</h2>
+          <p>Чтобы не запоминать много паролей, люди придумывают правило: одна основа и метка от названия сайта. В режиме «Правило» основа — прилагательное, существительное и число от 10 до 99, набранные в английской раскладке, а метка получается из букв названия сайта. Сколько всего таких правил:</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Что выбирается</th><th class="num">Вариантов</th><th class="num">Бит</th></tr></thead>
+              <tbody>
+                <tr><td>Основа: прилагательное, существительное, число</td><td class="num"><span data-phrase="adjectives">622</span> · <span data-phrase="subjects">645</span> · 90 ≈ 3,6·10<sup>7</sup></td><td class="num">25,1</td></tr>
+                <tr><td>Какие буквы названия взять и их регистр</td><td class="num">2 · 2 + 4 · 3 = 16</td><td class="num">4</td></tr>
+                <tr><td>Сдвиг по алфавиту: 0, +1, +2, +3, −1</td><td class="num">5</td><td class="num">2,3</td></tr>
+                <tr><td>Число в конце метки: нет, длина, гласные</td><td class="num">3</td><td class="num">1,6</td></tr>
+                <tr><td>Порядок частей и разделитель</td><td class="num">2 · 8 = 16</td><td class="num">4</td></tr>
+                <tr><td><b>Всего</b></td><td class="num">1,4·10<sup>11</sup></td><td class="num">37,0</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Пока ни один пароль не утёк, взломщику нужно угадать и основу, и правило — около 37 бит. Но он знает, как устроены такие правила: по принципу Керкгоффса секретом может быть только выбор, а не способ. Утечка одного пароля сразу открывает основу, а метка отсекает правила, которые для этого сайта дали бы другую метку. Стойкость пароля следующего сайта после <i>k</i> утечек:</p>
+          <p class="math"><i>H<sub>k</sub></i> = log<sub>2</sub> <i>M<sub>k</sub></i></p>
+          <p><i>M<sub>k</sub></i> — сколько разных паролей для следующего сайта дают правила, согласные со всеми <i>k</i> утечками. Пример: утёк пароль <code>Abjktnjdfzkbcf47!WL2</code> от vk.com. Основа <code>Abjktnjdfzkbcf47</code> («Фиолетовая лиса 47») видна сразу, а метку <code>WL2</code> из названия <code>vk</code> дают всего 4 правила: первые две, первые три, последние две или первая и последняя буквы — со сдвигом +1, заглавными и длиной названия. Для yandex.ru остаётся 4 варианта, то есть 2 бита вместо 37.</p>
+          <p>Мы смоделировали 6 000 случайных правил на 30 популярных сайтах. После одной утечки пароль от следующего сайта в 84 % случаев угадывается с первой попытки и ни разу не потребовал больше 4 попыток. Правило раскрыто целиком после одной утечки в 83 % случаев, после двух — в 99 %, после трёх — всегда.</p>
+          <p>Вывод: правило лучше одного пароля на все сайты — программа, которая пробует утёкший пароль «как есть», его не угадает. Но против человека, который посмотрит на утёкший пароль, оно почти бесполезно. У режима «Из слова» такой слабости нет: пароли получаются из мастер-фразы через PBKDF2 и HKDF, и по одному паролю другой не вычислить — придётся перебирать мастер-фразу со скоростью около 1,5·10<sup>4</sup> попыток в секунду.</p>
+        </section>
+
+        <section>
+          <h2>16. Личные данные</h2>
+          <p>Взломщик, который вас знает или нашёл вашу страницу в соцсети, начнёт с имени, даты рождения и клички питомца. В анализаторе их можно указать, и детектор будет искать их в пароле — в нескольких формах:</p>
+          <ul>
+            <li>как есть: <code>барсик</code>;</li>
+            <li>латиницей, во всех привычных вариантах транслита: <code>barsik</code>, <code>ilya</code>, <code>ilia</code>, <code>ilja</code>;</li>
+            <li>в другой раскладке: <code>,fhcbr</code> — это «барсик», набранный без переключения на русский;</li>
+            <li>задом наперёд: <code>кисраб</code>;</li>
+            <li>дата — до 12 видов записи: <code>15052008</code>, <code>150508</code>, <code>1505</code>, <code>2008</code>, <code>15.05.2008</code>…</li>
+          </ul>
+          <p>Цена найденного куска:</p>
+          <p class="math"><i>H</i> = log<sub>2</sub> <i>K</i> + <i>H</i><sub>формы</sub> + <i>H</i><sub>регистра</sub></p>
+          <p><i>K</i> — сколько записей о вас указано: взломщик не знает, какую из них вы выбрали. Слово как есть стоит 0 бит, а латиницей, в другой раскладке или задом наперёд — +1 бит, как у слов из словаря. Дата стоит log<sub>2</sub> <i>F</i> бит, где <i>F</i> — число видов её записи (для 15.05.2008 их 12, это 3,6 бита). Заглавные буквы считаются так же, как в разделе 9.</p>
+          <p>Пример: указаны имя Илья, дата рождения 15.05.2008, кличка Барсик и город Красноярск, <i>K</i> = 4. Пароль <code>Ilya2008!</code> по формуле стоит 59 бит, а с личными данными — <span class="nowrap"><i>H</i> = 4 + 5,6 + 5 + 3 · 2 ≈ 20,6 бита</span>: «Ilya» — 2 + 1 + 1 бит (запись, транслит, заглавная), «2008» — 2 + 3,6, «!» — 5 бит. Его подберут быстрее чем за секунду.</p>
+          <p>Личные данные не сохраняются и никуда не отправляются: они живут в памяти страницы и пропадают после перезагрузки.</p>
+        </section>
+
+        <section>
+          <h2>17. Проверка утечек: k-анонимность</h2>
+          <p>Сервис Have I Been Pwned (его автор — Troy Hunt) собрал пароли из реальных утечек — около двух миллиардов разных паролей. Отправлять ему свой пароль нельзя: это и было бы утечкой. Поэтому проверка устроена так, что сервер не узнаёт ни пароль, ни даже его хеш:</p>
+          <ol>
+            <li>Браузер считает хеш SHA-1 пароля — 40 шестнадцатеричных символов: <code>password</code> → <code class="nowrap">5BAA61E4C9B93F3F…</code></li>
+            <li>Серверу уходят только первые 5 символов: <code>5BAA6</code>.</li>
+            <li>Сервер возвращает все хеши, которые так начинаются, — без первых пяти символов, с числом, сколько раз каждый встречался в утечках.</li>
+            <li>Браузер сам ищет в ответе свой хеш. У <code>password</code> — больше 52 млн случаев.</li>
+          </ol>
+          <p>Пяти шестнадцатеричных символов хватает на</p>
+          <p class="math">16<sup>5</sup> = 1 048 576</p>
+          <p>разных начал, поэтому в каждой «корзине» около 2 000 хешей: в 24 случайных корзинах мы насчитали от 1 851 до 2 072. Сервер видит только корзину, а ваш пароль для него — один из тысяч возможных. Это и есть <i>k</i>-анонимность: запрос нельзя отличить от запросов ещё <i>k</i> − 1 вариантов.</p>
+          <p>Заголовок <code>Add-Padding: true</code> добавляет в ответ пустышки с нулевым счётчиком, чтобы даже по размеру зашифрованного ответа нельзя было угадать корзину. SHA-1 устарел для цифровых подписей, но здесь он нужен лишь как общий для всех «адрес» пароля в базе. Запрос уходит только по кнопке «Проверить».</p>
+        </section>
+
+        <section>
+          <h2>18. Похожие пароли: расстояние Левенштейна</h2>
+          <p>Когда сайт просит сменить пароль, многие меняют одну цифру: <code>Barsik2023!</code> → <code>Barsik2024!</code>. Если старый пароль утёк, взломщик первым делом пробует такие варианты. Насколько пароли похожи, показывает расстояние Левенштейна <i>d</i> — наименьшее число правок (вставить, удалить или заменить символ), чтобы из одного пароля получить другой.</p>
+          <p>Его считают динамическим программированием. <i>D</i>[<i>i</i>][<i>j</i>] — расстояние между первыми <i>i</i> символами пароля <i>a</i> и первыми <i>j</i> символами пароля <i>b</i>:</p>
+          <p class="math"><i>D</i>[<i>i</i>][<i>j</i>] = min(<i>D</i>[<i>i</i>−1][<i>j</i>] + 1, <i>D</i>[<i>i</i>][<i>j</i>−1] + 1, <i>D</i>[<i>i</i>−1][<i>j</i>−1] + [<i>a<sub>i</sub></i> ≠ <i>b<sub>j</sub></i>])</p>
+          <p>Начало: <i>D</i>[<i>i</i>][0] = <i>i</i>, <i>D</i>[0][<i>j</i>] = <i>j</i>. Три варианта — удалить символ, вставить символ или заменить его (бесплатно, если символы совпали).</p>
+          <p>Сколько вариантов переберёт взломщик, который знает старый пароль длины <i>L</i>: у каждой правки не больше 2<i>L</i> + 1 мест (<i>L</i> символов и <i>L</i> + 1 промежуток) и <i>N</i> возможных символов, а порядок <i>d</i> правок неважен:</p>
+          <p class="math"><i>H</i> ≈ <i>d</i> · log<sub>2</sub>((2<i>L</i> + 1) · <i>N</i>) − log<sub>2</sub> <i>d</i>!</p>
+          <p>Для <code>Barsik2023!</code> → <code>Barsik2024!</code>: <i>d</i> = 1, <i>L</i> = 11, <i>N</i> = 94, <span class="nowrap"><i>H</i> = log<sub>2</sub>(23 · 94) ≈ 11,1 бита</span> — около 2 000 попыток, пара минут даже через форму входа на сайте. Выше оценки детектора эта оценка не поднимается: слабый пароль остаётся слабым и без подсказки.</p>
+        </section>
+
+        <section>
+          <h2>19. Проверка на миллионе настоящих паролей</h2>
+          <p>Правильно ли анализатор оценивает пароли? Мы проверили его на миллионе самых популярных паролей из утечек — списке Xato из коллекции SecLists. Пароли в нём стоят по убыванию популярности: взломщик, который перебирает их по порядку, найдёт пароль на месте <i>r</i> за <i>r</i> попыток. Значит, настоящая стойкость такого пароля не больше</p>
+          <p class="math"><i>T</i> = log<sub>2</sub> <i>r</i> ≤ log<sub>2</sub> 1&nbsp;000&nbsp;000 ≈ 19,9 бита,</p>
+          <p>и правильная оценка для всех них — «очень слабый». Русские пароли мы отобрали отдельно: это пароли, в которых русское слово набрано в английской раскладке (<code>gfhjkm</code>, <code>yfnfif1983</code>). Слова проверяли по орфографическому словарю Hunspell — другому, чем у BastionBit и zxcvbn, чтобы отбор не подыгрывал ни одной из оценок. Для контроля взяли пароли, стойкость которых известна точно: случайные, фразы и ментальные правила BastionBit, по 2&nbsp;000 каждого вида.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Что проверяли</th><th class="num">Формула</th><th class="num">BastionBit</th><th class="num">zxcvbn</th></tr></thead>
+              <tbody>
+                <tr><td>Миллион паролей Xato: назвали «очень слабым»</td><td class="num">21&nbsp;%</td><td class="num">58&nbsp;%</td><td class="num">91&nbsp;%</td></tr>
+                <tr><td>…назвали «средним» и выше</td><td class="num">53&nbsp;%</td><td class="num">21&nbsp;%</td><td class="num">3&nbsp;%</td></tr>
+                <tr><td>12&nbsp;069 русских слов в английской раскладке: «очень слабый»</td><td class="num">2&nbsp;%</td><td class="num">70&nbsp;%</td><td class="num">79&nbsp;%</td></tr>
+                <tr><td>…«средний» и выше</td><td class="num">75&nbsp;%</td><td class="num">15&nbsp;%</td><td class="num">6&nbsp;%</td></tr>
+                <tr><td>Случайный пароль из 16 символов (точно 104,6 бита), медиана</td><td class="num">104,9</td><td class="num">104,9</td><td class="num">53,1</td></tr>
+                <tr><td>Фраза BastionBit из 6 слов (точно 52,8 бита), медиана</td><td class="num">288,3</td><td class="num">52,8</td><td class="num">152,8</td></tr>
+                <tr><td>Ментальное правило (точно 37,0 бита), медиана</td><td class="num">137,7</td><td class="num">93,8</td><td class="num">69,2</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p><b>Формула</b> ошибается сильнее всех: больше половины паролей из утечки она называет средними и сильными.</p>
+          <p><b>zxcvbn</b> точнее всех на паролях из утечек. Отчасти потому, что её словарь собран из той же базы Xato: из паролей с мест 10&nbsp;001–100&nbsp;000 она знает целиком 26&nbsp;%, а BastionBit — 4&nbsp;%. Кроме того, каждый незнакомый символ zxcvbn считает всего за 10 вариантов. Поэтому случайные пароли она недооценивает вдвое, а фразы переоценивает почти втрое.</p>
+          <p><b>BastionBit</b> точен там, где стойкость известна заранее: случайные пароли и фразы он оценивает точно. Незнакомые куски он считает случайными, поэтому пароли из редких слов и имён переоценивает. Ментальное правило не видит никто — его знает только тот, кто его придумал. Поэтому на вкладке «Правило» стойкость считается по самому правилу.</p>
+          <p>По итогам проверки мы расширили словари детектора: 47&nbsp;000 русских и 46&nbsp;000 английских слов вместо 30&nbsp;000 и 57&nbsp;000 русских имён, фамилий, отчеств и названий мест из словаря OpenCorpora. Русских паролей, названных «очень слабыми», стало 70&nbsp;% вместо 52&nbsp;%, а «средних и выше» — почти вдвое меньше: 15&nbsp;% вместо 27&nbsp;%.</p>
+          <p>Случайные пароли детектор почти не трогает: из 20&nbsp;000 паролей по 12 символов «хитрость» нашлась у 1,2&nbsp;%, и оценка снизилась примерно на 10 бит из 78. Один пароль детектор проверяет обычно за 0,1&nbsp;мс.</p>
+          <p>Скрипт проверки и все результаты лежат в папке <code>tools</code>: <code>evaluate.js</code> и <code>results/evaluation.json</code>.</p>
+        </section>
+
+        <section>
+          <h2>20. Источники данных</h2>
+          <ul>
+            <li>Популярные пароли — 10 000 самых частых паролей из базы Xato на 10 млн паролей (Mark Burnett), список из SecLists, лицензия MIT.</li>
+            <li>Частые русские и английские слова — FrequencyWords (Hermit Dave) по субтитрам OpenSubtitles 2018, лицензия CC BY-SA 4.0.</li>
+            <li>Русские имена, фамилии, отчества и названия мест — словарь OpenCorpora, лицензия CC BY-SA 3.0.</li>
+            <li>Для проверки в разделе 19 — миллион паролей Xato из SecLists (MIT) и орфографический словарь Hunspell ru_RU (А. Лебедев) из LibreOffice. На сайт они не загружаются.</li>
+            <li>Библиотеки zxcvbn 4.4.2 (Dropbox) и Chart.js 4.6.1 — лицензия MIT.</li>
+            <li>Словари фраз генератора составлены вручную и проверены по словарю OpenCorpora.</li>
+            <li>Проверка утечек — Pwned Passwords сервиса <a href="https://haveibeenpwned.com/Passwords" target="_blank" rel="noopener noreferrer">Have I Been Pwned</a> (Troy Hunt). Указывать источник для этой проверки не обязательно, но мы указываем его с благодарностью.</li>
+            <li>Логотипы Claude и Gemini в подвале сайта — товарные знаки Anthropic и Google.</li>
+          </ul>
+        </section>
+      </article>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-main">
+      <div class="footer-about">
+        <p class="footer-brand">
+          <svg class="footer-mark" viewBox="0 0 32 32" aria-hidden="true">
+            <rect width="32" height="32" rx="8" fill="url(#brand-gradient)"/>
+            <path fill="#fff" fill-rule="evenodd" d="M8 8h3v2.5h2.5V8h5v2.5H21V8h3v15a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 8 23V8Zm8 6.2a2.3 2.3 0 0 0-1.15 4.29l-.6 3.51h3.5l-.6-3.51A2.3 2.3 0 0 0 16 14.2Z"/>
+          </svg>
+          <span><span class="brand-name">Bastion<span class="brand-accent">Bit</span></span> · индивидуальный проект по информатике</span>
+        </p>
+        <p class="footer-author">Автор — <strong>Марковицкий Илья Алексеевич</strong>, ученик 10&nbsp;класса МАОУ «СОШ №&nbsp;11»</p>
+      </div>
+      <div class="footer-thanks">
+        <p class="footer-label">Проект реализован благодаря</p>
+        <ul class="ai-badges">
+          <li>
+            <a class="ai-badge" href="https://claude.ai" target="_blank" rel="noopener noreferrer">
+              <img class="ai-logo" src="assets/claude.png" alt="" width="32" height="32">
+              <span class="ai-text"><span class="ai-name">Claude</span><span class="ai-maker">Anthropic</span></span>
+            </a>
+          </li>
+          <li>
+            <a class="ai-badge" href="https://gemini.google.com" target="_blank" rel="noopener noreferrer">
+              <img class="ai-logo ai-logo-light" src="assets/gemini.png" alt="" width="32" height="32">
+              <span class="ai-text"><span class="ai-name">Gemini</span><span class="ai-maker">Google</span></span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <p>Всё считается в вашем браузере, пароли никуда не отправляются. Проверка утечек передаёт только 5 символов хеша — и только по кнопке.</p>
+    </div>
+  </footer>
+
+  <script src="js/random.js"></script>
+  <script src="js/entropy.js"></script>
+  <script src="js/generator.js"></script>
+  <script src="data/words-ru.js"></script>
+  <script src="js/phrase.js"></script>
+  <script src="js/keyword.js"></script>
+  <script src="js/patterns.js"></script>
+  <script src="js/rule.js"></script>
+  <script src="js/personal.js"></script>
+  <script src="js/breach.js"></script>
+  <script src="js/similar.js"></script>
+  <script src="js/motion.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/trainer.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/trainer-ui.js"></script>
+  <script src="js/rule-ui.js"></script>
+  <script src="js/extras-ui.js"></script>
+  <script src="js/app.js"></script>
+  <!-- Словари детектора, zxcvbn и Chart.js app.js загружает, когда открывают анализатор. -->
+</body>
+</html>

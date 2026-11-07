@@ -1,0 +1,1748 @@
+{
+ "about": "BastionBit, этап 5: сравнение оценок стойкости на настоящих паролях",
+ "source": "SecLists, Passwords/Common-Credentials/xato-net-10-million-passwords-1000000.txt",
+ "truth": "T = log2(место в списке) — столько бит нужно взломщику, который перебирает пароли по популярности",
+ "estimators": {
+  "formula": "L · log2 N",
+  "bastionbit": "детектор хитростей BastionBit",
+  "zxcvbn": "zxcvbn 4.4.2, log2(guesses)"
+ },
+ "levels": [
+  "Очень слабый",
+  "Слабый",
+  "Средний",
+  "Сильный",
+  "Очень сильный"
+ ],
+ "groups": {
+  "all": {
+   "title": "весь миллион",
+   "n": 1000000,
+   "truth": {
+    "median": 18.93,
+    "min": 0,
+    "max": 19.93
+   },
+   "knownWhole": {
+    "bastionbit": 0.0225,
+    "zxcvbn": 0.0455
+   },
+   "detectorFound": 0.5768,
+   "estimators": {
+    "formula": {
+     "median": 36.19,
+     "p25": 28.2,
+     "p75": 41.36,
+     "p10": 19.93,
+     "p90": 51.7,
+     "medianError": 17.19,
+     "meanAbsError": 17.91,
+     "over10": 0.7513,
+     "under10": 0,
+     "levels": [
+      0.2119,
+      0.2564,
+      0.4889,
+      0.0425,
+      0.0003
+     ],
+     "spearman": 0.314
+    },
+    "bastionbit": {
+     "median": 24.37,
+     "p25": 18.74,
+     "p75": 32.9,
+     "p10": 14.85,
+     "p90": 41.36,
+     "medianError": 5.82,
+     "meanAbsError": 9.72,
+     "over10": 0.3718,
+     "under10": 0.001,
+     "levels": [
+      0.58,
+      0.2067,
+      0.1988,
+      0.0145,
+      0
+     ],
+     "spearman": 0.472
+    },
+    "zxcvbn": {
+     "median": 18.53,
+     "p25": 14.56,
+     "p75": 23.25,
+     "p10": 13.29,
+     "p90": 26.6,
+     "medianError": -0.05,
+     "meanAbsError": 4.43,
+     "over10": 0.0756,
+     "under10": 0.0031,
+     "levels": [
+      0.9144,
+      0.0576,
+      0.0276,
+      0.0004,
+      0
+     ],
+     "spearman": 0.505
+    }
+   }
+  },
+  "top10k": {
+   "title": "места 1–10 000",
+   "n": 10000,
+   "truth": {
+    "median": 12.29,
+    "min": 0,
+    "max": 13.29
+   },
+   "knownWhole": {
+    "bastionbit": 0.8001,
+    "zxcvbn": 0.5787
+   },
+   "detectorFound": 0.9967,
+   "estimators": {
+    "formula": {
+     "median": 28.2,
+     "p25": 26.58,
+     "p75": 32.9,
+     "p10": 19.93,
+     "p90": 37.6,
+     "medianError": 16.85,
+     "meanAbsError": 17.78,
+     "over10": 0.894,
+     "under10": 0,
+     "levels": [
+      0.3383,
+      0.4495,
+      0.2104,
+      0.0018,
+      0
+     ],
+     "spearman": -0.082
+    },
+    "bastionbit": {
+     "median": 11.95,
+     "p25": 10.54,
+     "p75": 12.77,
+     "p10": 8.51,
+     "p90": 13.09,
+     "medianError": -0.01,
+     "meanAbsError": 0.54,
+     "over10": 0.0004,
+     "under10": 0.0002,
+     "levels": [
+      0.9997,
+      0.0001,
+      0.0002,
+      0,
+      0
+     ],
+     "spearman": 0.798
+    },
+    "zxcvbn": {
+     "median": 11,
+     "p25": 9.07,
+     "p75": 12.06,
+     "p10": 6.99,
+     "p90": 12.83,
+     "medianError": -0.68,
+     "meanAbsError": 1.54,
+     "over10": 0,
+     "under10": 0.0003,
+     "levels": [
+      1,
+      0,
+      0,
+      0,
+      0
+     ],
+     "spearman": 0.708
+    }
+   }
+  },
+  "to100k": {
+   "title": "места 10 001–100 000",
+   "n": 90000,
+   "truth": {
+    "median": 15.75,
+    "min": 13.29,
+    "max": 16.61
+   },
+   "knownWhole": {
+    "bastionbit": 0.0355,
+    "zxcvbn": 0.2582
+   },
+   "detectorFound": 0.8231,
+   "estimators": {
+    "formula": {
+     "median": 28.2,
+     "p25": 23.5,
+     "p75": 36.19,
+     "p10": 19.93,
+     "p90": 41.36,
+     "medianError": 12.49,
+     "meanAbsError": 13.93,
+     "over10": 0.7068,
+     "under10": 0,
+     "levels": [
+      0.4699,
+      0.272,
+      0.2549,
+      0.0032,
+      0
+     ],
+     "spearman": 0.07
+    },
+    "bastionbit": {
+     "median": 15.16,
+     "p25": 14.85,
+     "p75": 19.93,
+     "p10": 12.71,
+     "p90": 28.2,
+     "medianError": 0.14,
+     "meanAbsError": 4.48,
+     "over10": 0.1514,
+     "under10": 0.0008,
+     "levels": [
+      0.8707,
+      0.0937,
+      0.0352,
+      0.0004,
+      0
+     ],
+     "spearman": 0.175
+    },
+    "zxcvbn": {
+     "median": 13.87,
+     "p25": 13.18,
+     "p75": 14.44,
+     "p10": 11.25,
+     "p90": 16.61,
+     "medianError": -1.41,
+     "meanAbsError": 2.4,
+     "over10": 0.0115,
+     "under10": 0.0027,
+     "levels": [
+      0.9954,
+      0.0038,
+      0.0009,
+      0,
+      0
+     ],
+     "spearman": 0.375
+    }
+   }
+  },
+  "to1m": {
+   "title": "места 100 001–1 000 000",
+   "n": 900000,
+   "truth": {
+    "median": 19.07,
+    "min": 16.61,
+    "max": 19.93
+   },
+   "knownWhole": {
+    "bastionbit": 0.0126,
+    "zxcvbn": 0.0183
+   },
+   "detectorFound": 0.5475,
+   "estimators": {
+    "formula": {
+     "median": 36.19,
+     "p25": 28.2,
+     "p75": 41.36,
+     "p10": 23.25,
+     "p90": 51.7,
+     "medianError": 17.66,
+     "meanAbsError": 18.31,
+     "over10": 0.7542,
+     "under10": 0,
+     "levels": [
+      0.1847,
+      0.2527,
+      0.5154,
+      0.0469,
+      0.0003
+     ],
+     "spearman": 0.259
+    },
+    "bastionbit": {
+     "median": 25.94,
+     "p25": 19.93,
+     "p75": 33.84,
+     "p10": 15.16,
+     "p90": 41.36,
+     "medianError": 7.07,
+     "meanAbsError": 10.35,
+     "over10": 0.398,
+     "under10": 0.0011,
+     "levels": [
+      0.5463,
+      0.2202,
+      0.2173,
+      0.0161,
+      0
+     ],
+     "spearman": 0.382
+    },
+    "zxcvbn": {
+     "median": 19.5,
+     "p25": 15.57,
+     "p75": 23.25,
+     "p10": 13.69,
+     "p90": 27.42,
+     "medianError": 0.31,
+     "meanAbsError": 4.67,
+     "over10": 0.0829,
+     "under10": 0.0032,
+     "levels": [
+      0.9053,
+      0.0637,
+      0.0306,
+      0.0004,
+      0
+     ],
+     "spearman": 0.399
+    }
+   }
+  },
+  "russian": {
+   "title": "русские слова в английской раскладке",
+   "n": 12069,
+   "truth": {
+    "median": 19,
+    "min": 6.81,
+    "max": 19.91
+   },
+   "knownWhole": {
+    "bastionbit": 0.0225,
+    "zxcvbn": 0.0911
+   },
+   "detectorFound": 0.8249,
+   "estimators": {
+    "formula": {
+     "median": 41.36,
+     "p25": 34.2,
+     "p75": 51.7,
+     "p10": 28.2,
+     "p90": 56.87,
+     "medianError": 23.34,
+     "meanAbsError": 24.89,
+     "over10": 0.9398,
+     "under10": 0,
+     "levels": [
+      0.0176,
+      0.2344,
+      0.6634,
+      0.0846,
+      0
+     ],
+     "spearman": 0.343
+    },
+    "bastionbit": {
+     "median": 22.5,
+     "p25": 16.8,
+     "p75": 29.37,
+     "p10": 14.46,
+     "p90": 38.9,
+     "medianError": 3.36,
+     "meanAbsError": 7.94,
+     "over10": 0.2671,
+     "under10": 0.0007,
+     "levels": [
+      0.6967,
+      0.1547,
+      0.1413,
+      0.0074,
+      0
+     ],
+     "spearman": 0.35
+    },
+    "zxcvbn": {
+     "median": 23.25,
+     "p25": 18.7,
+     "p75": 26.58,
+     "p10": 14.86,
+     "p90": 33.22,
+     "medianError": 3.56,
+     "meanAbsError": 5.87,
+     "over10": 0.1979,
+     "under10": 0,
+     "levels": [
+      0.791,
+      0.1478,
+      0.0611,
+      0.0001,
+      0
+     ],
+     "spearman": 0.26
+    }
+   }
+  },
+  "russianTop10k": {
+   "title": "русские слова в раскладке, места 1–10 000",
+   "n": 125,
+   "truth": {
+    "median": 12.31,
+    "min": 6.81,
+    "max": 13.28
+   },
+   "knownWhole": {
+    "bastionbit": 0.904,
+    "zxcvbn": 1
+   },
+   "detectorFound": 1,
+   "estimators": {
+    "formula": {
+     "median": 32.9,
+     "p25": 28.2,
+     "p75": 37.6,
+     "p10": 28.2,
+     "p90": 42.3,
+     "medianError": 20.93,
+     "meanAbsError": 22.04,
+     "over10": 1,
+     "under10": 0,
+     "levels": [
+      0.008,
+      0.6,
+      0.392,
+      0,
+      0
+     ],
+     "spearman": 0.131
+    },
+    "bastionbit": {
+     "median": 12.14,
+     "p25": 11.31,
+     "p75": 12.81,
+     "p10": 10.28,
+     "p90": 13.03,
+     "medianError": -0.01,
+     "meanAbsError": 0.16,
+     "over10": 0,
+     "under10": 0,
+     "levels": [
+      1,
+      0,
+      0,
+      0,
+      0
+     ],
+     "spearman": 0.914
+    },
+    "zxcvbn": {
+     "median": 11.57,
+     "p25": 10.86,
+     "p75": 12.11,
+     "p10": 9.82,
+     "p90": 12.38,
+     "medianError": -0.68,
+     "meanAbsError": 0.68,
+     "over10": 0,
+     "under10": 0,
+     "levels": [
+      1,
+      0,
+      0,
+      0,
+      0
+     ],
+     "spearman": 0.981
+    }
+   }
+  },
+  "russianRest": {
+   "title": "русские слова в раскладке, места 10 001–1 000 000",
+   "n": 11944,
+   "truth": {
+    "median": 19.02,
+    "min": 13.29,
+    "max": 19.91
+   },
+   "knownWhole": {
+    "bastionbit": 0.0133,
+    "zxcvbn": 0.0816
+   },
+   "detectorFound": 0.8231,
+   "estimators": {
+    "formula": {
+     "median": 41.36,
+     "p25": 36.19,
+     "p75": 51.7,
+     "p10": 28.2,
+     "p90": 56.87,
+     "medianError": 23.39,
+     "meanAbsError": 24.92,
+     "over10": 0.9391,
+     "under10": 0,
+     "levels": [
+      0.0177,
+      0.2306,
+      0.6662,
+      0.0855,
+      0
+     ],
+     "spearman": 0.334
+    },
+    "bastionbit": {
+     "median": 22.58,
+     "p25": 16.8,
+     "p75": 29.64,
+     "p10": 14.7,
+     "p90": 39.05,
+     "medianError": 3.45,
+     "meanAbsError": 8.03,
+     "over10": 0.2699,
+     "under10": 0.0007,
+     "levels": [
+      0.6935,
+      0.1563,
+      0.1427,
+      0.0075,
+      0
+     ],
+     "spearman": 0.33
+    },
+    "zxcvbn": {
+     "median": 23.25,
+     "p25": 18.93,
+     "p75": 26.58,
+     "p10": 15.56,
+     "p90": 33.22,
+     "medianError": 3.6,
+     "meanAbsError": 5.93,
+     "over10": 0.2,
+     "under10": 0,
+     "levels": [
+      0.7888,
+      0.1494,
+      0.0618,
+      0.0001,
+      0
+     ],
+     "spearman": 0.237
+    }
+   }
+  }
+ },
+ "decades": [
+  {
+   "from": 1,
+   "to": 10,
+   "title": "до 10",
+   "n": 10,
+   "truth": {
+    "median": 2.45,
+    "min": 0,
+    "max": 3.32
+   },
+   "knownWhole": {
+    "bastionbit": 1,
+    "zxcvbn": 1
+   },
+   "detectorFound": 1,
+   "estimators": {
+    "formula": {
+     "median": 24.91,
+     "p25": 19.93,
+     "p75": 28.2,
+     "p10": 16.28,
+     "p90": 30.67,
+     "medianError": 22.48,
+     "meanAbsError": 22.17,
+     "over10": 1,
+     "under10": 0,
+     "levels": [
+      0.6,
+      0.3,
+      0.1,
+      0,
+      0
+     ],
+     "spearman": null
+    },
+    "bastionbit": {
+     "median": 2.45,
+     "p25": 1.69,
+     "p75": 2.95,
+     "p10": 1,
+     "p90": 3.19,
+     "medianError": 0,
+     "meanAbsError": 0.1,
+     "over10": 0,
+     "under10": 0,
+     "levels": [
+      1,
+      0,
+      0,
+      0,
+      0
+     ],
+     "spearman": null
+    },
+    "zxcvbn": {
+     "median": 2.7,
+     "p25": 2.08,
+     "p75": 3.13,
+     "p10": 1.53,
+     "p90": 3.34,
+     "medianError": 0.24,
+     "meanAbsError": 0.35,
+     "over10": 0,
+     "under10": 0,
+     "levels": [
+      1,
+      0,
+      0,
+      0,
+      0
+     ],
+     "spearman": null
+    }
+   }
+  },
+  {
+   "from": 11,
+   "to": 100,
+   "title": "до 100",
+   "n": 90,
+   "truth": {
+    "median": 5.79,
+    "min": 3.46,
+    "max": 6.64
+   },
+   "knownWhole": {
+    "bastionbit": 0.9556,
+    "zxcvbn": 0.7556
+   },
+   "detectorFound": 0.9889,
+   "estimators": {
+    "formula": {
+     "median": 28.2,
+     "p25": 28.2,
+     "p75": 32.9,
+     "p10": 19.93,
+     "p90": 37.6,
+     "medianError": 22.55,
+     "meanAbsError": 22.8,
+     "over10": 0.9556,
+     "under10": 0,
+     "levels": [
+      0.2444,
+      0.6111,
+      0.1444,
+      0,
+      0
+     ],
+     "spearman": null
+    },
+    "bastionbit": {
+     "median": 5.71,
+     "p25": 4.97,
+     "p75": 6.24,
+     "p10": 4.08,
+     "p90": 6.48,
+     "medianError": -0.02,
+     "meanAbsError": 0.15,
+     "over10": 0,
+     "under10": 0,
+     "levels": [
+      1,
+      0,
+      0,
+      0,
+      0
+     ],
+     "spearman": null
+    },
+    "zxcvbn": {
+     "median": 5.34,
+     "p25": 4.54,
+     "p75": 5.92,
+     "p10": 3.69,
+     "p90": 6.17,
+     "medianError": -0.2,
+     "meanAbsError": 0.57,
+     "over10": 0,
+     "under10": 0,
+     "levels": [
+      1,
+      0,
+      0,
+      0,
+      0
+     ],
+     "spearman": null
+    }
+   }
+  },
+  {
+   "from": 101,
+   "to": 1000,
+   "title": "до 1000",
+   "n": 900,
+   "truth": {
+    "median": 9.1,
+    "min": 6.66,
+    "max": 9.97
+   },
+   "knownWhole": {
+    "bastionbit": 0.8744,
+    "zxcvbn": 0.68
+   },
+   "detectorFound": 1,
+   "estimators": {
+    "formula": {
+     "median": 28.2,
+     "p25": 28.2,
+     "p75": 32.9,
+     "p10": 19.93,
+     "p90": 37.6,
+     "medianError": 20.09,
+     "meanAbsError": 20.53,
+     "over10": 0.9222,
+     "under10": 0,
+     "levels": [
+      0.2167,
+      0.5933,
+      0.1889,
+      0.0011,
+      0
+     ],
+     "spearman": null
+    },
+    "bastionbit": {
+     "median": 8.9,
+     "p25": 7.97,
+     "p75": 9.52,
+     "p10": 6.94,
+     "p90": 9.8,
+     "medianError": -0.01,
+     "meanAbsError": 0.32,
+     "over10": 0,
+     "under10": 0,
+     "levels": [
+      1,
+      0,
+      0,
+      0,
+      0
+     ],
+     "spearman": null
+    },
+    "zxcvbn": {
+     "median": 8.09,
+     "p25": 6.87,
+     "p75": 8.86,
+     "p10": 5.61,
+     "p90": 9.23,
+     "medianError": -0.51,
+     "meanAbsError": 1.22,
+     "over10": 0,
+     "under10": 0,
+     "levels": [
+      1,
+      0,
+      0,
+      0,
+      0
+     ],
+     "spearman": null
+    }
+   }
+  },
+  {
+   "from": 1001,
+   "to": 10000,
+   "title": "до 10000",
+   "n": 9000,
+   "truth": {
+    "median": 12.43,
+    "min": 9.97,
+    "max": 13.29
+   },
+   "knownWhole": {
+    "bastionbit": 0.7909,
+    "zxcvbn": 0.5663
+   },
+   "detectorFound": 0.9964,
+   "estimators": {
+    "formula": {
+     "median": 28.2,
+     "p25": 26.58,
+     "p75": 32.9,
+     "p10": 19.93,
+     "p90": 37.6,
+     "medianError": 16.42,
+     "meanAbsError": 17.45,
+     "over10": 0.8904,
+     "under10": 0,
+     "levels": [
+      0.3511,
+      0.4337,
+      0.2133,
+      0.0019,
+      0
+     ],
+     "spearman": null
+    },
+    "bastionbit": {
+     "median": 12.15,
+     "p25": 11.06,
+     "p75": 12.82,
+     "p10": 9.96,
+     "p90": 13.11,
+     "medianError": -0.01,
+     "meanAbsError": 0.56,
+     "over10": 0.0004,
+     "under10": 0.0002,
+     "levels": [
+      0.9997,
+      0.0001,
+      0.0002,
+      0,
+      0
+     ],
+     "spearman": null
+    },
+    "zxcvbn": {
+     "median": 11.26,
+     "p25": 9.8,
+     "p75": 12.14,
+     "p10": 7.67,
+     "p90": 13.64,
+     "medianError": -0.69,
+     "meanAbsError": 1.58,
+     "over10": 0,
+     "under10": 0.0003,
+     "levels": [
+      1,
+      0,
+      0,
+      0,
+      0
+     ],
+     "spearman": null
+    }
+   }
+  },
+  {
+   "from": 10001,
+   "to": 100000,
+   "title": "до 100000",
+   "n": 90000,
+   "truth": {
+    "median": 15.75,
+    "min": 13.29,
+    "max": 16.61
+   },
+   "knownWhole": {
+    "bastionbit": 0.0355,
+    "zxcvbn": 0.2582
+   },
+   "detectorFound": 0.8231,
+   "estimators": {
+    "formula": {
+     "median": 28.2,
+     "p25": 23.5,
+     "p75": 36.19,
+     "p10": 19.93,
+     "p90": 41.36,
+     "medianError": 12.49,
+     "meanAbsError": 13.93,
+     "over10": 0.7068,
+     "under10": 0,
+     "levels": [
+      0.4699,
+      0.272,
+      0.2549,
+      0.0032,
+      0
+     ],
+     "spearman": null
+    },
+    "bastionbit": {
+     "median": 15.16,
+     "p25": 14.85,
+     "p75": 19.93,
+     "p10": 12.71,
+     "p90": 28.2,
+     "medianError": 0.14,
+     "meanAbsError": 4.48,
+     "over10": 0.1514,
+     "under10": 0.0008,
+     "levels": [
+      0.8707,
+      0.0937,
+      0.0352,
+      0.0004,
+      0
+     ],
+     "spearman": null
+    },
+    "zxcvbn": {
+     "median": 13.87,
+     "p25": 13.18,
+     "p75": 14.44,
+     "p10": 11.25,
+     "p90": 16.61,
+     "medianError": -1.41,
+     "meanAbsError": 2.4,
+     "over10": 0.0115,
+     "under10": 0.0027,
+     "levels": [
+      0.9954,
+      0.0038,
+      0.0009,
+      0,
+      0
+     ],
+     "spearman": null
+    }
+   }
+  },
+  {
+   "from": 100001,
+   "to": 1000000,
+   "title": "до 1000000",
+   "n": 900000,
+   "truth": {
+    "median": 19.07,
+    "min": 16.61,
+    "max": 19.93
+   },
+   "knownWhole": {
+    "bastionbit": 0.0126,
+    "zxcvbn": 0.0183
+   },
+   "detectorFound": 0.5475,
+   "estimators": {
+    "formula": {
+     "median": 36.19,
+     "p25": 28.2,
+     "p75": 41.36,
+     "p10": 23.25,
+     "p90": 51.7,
+     "medianError": 17.66,
+     "meanAbsError": 18.31,
+     "over10": 0.7542,
+     "under10": 0,
+     "levels": [
+      0.1847,
+      0.2527,
+      0.5154,
+      0.0469,
+      0.0003
+     ],
+     "spearman": null
+    },
+    "bastionbit": {
+     "median": 25.94,
+     "p25": 19.93,
+     "p75": 33.84,
+     "p10": 15.16,
+     "p90": 41.36,
+     "medianError": 7.07,
+     "meanAbsError": 10.35,
+     "over10": 0.398,
+     "under10": 0.0011,
+     "levels": [
+      0.5463,
+      0.2202,
+      0.2173,
+      0.0161,
+      0
+     ],
+     "spearman": null
+    },
+    "zxcvbn": {
+     "median": 19.5,
+     "p25": 15.57,
+     "p75": 23.25,
+     "p10": 13.69,
+     "p90": 27.42,
+     "medianError": 0.31,
+     "meanAbsError": 4.67,
+     "over10": 0.0829,
+     "under10": 0.0032,
+     "levels": [
+      0.9053,
+      0.0637,
+      0.0306,
+      0.0004,
+      0
+     ],
+     "spearman": null
+    }
+   }
+  }
+ ],
+ "examples": [
+  {
+   "rank": 1,
+   "password": "123456",
+   "truth": 0,
+   "bits": [
+    19.9,
+    1,
+    1
+   ]
+  },
+  {
+   "rank": 112,
+   "password": "gfhjkm",
+   "truth": 6.81,
+   "bits": [
+    28.2,
+    6.8,
+    6.5
+   ]
+  },
+  {
+   "rank": 242,
+   "password": "ghbdtn",
+   "truth": 7.92,
+   "bits": [
+    28.2,
+    7,
+    7.6
+   ]
+  },
+  {
+   "rank": 1999,
+   "password": "privet",
+   "truth": 10.97,
+   "bits": [
+    28.2,
+    7,
+    10.3
+   ]
+  },
+  {
+   "rank": 10001,
+   "password": "billbill",
+   "truth": 13.29,
+   "bits": [
+    37.6,
+    10.4,
+    8.3
+   ]
+  },
+  {
+   "rank": 50000,
+   "password": "bearing",
+   "truth": 15.61,
+   "bits": [
+    32.9,
+    12.5,
+    11.5
+   ]
+  },
+  {
+   "rank": 123456,
+   "password": "blades1",
+   "truth": 16.91,
+   "bits": [
+    36.2,
+    17.3,
+    15.2
+   ]
+  },
+  {
+   "rank": 500000,
+   "password": "kiltyeuk",
+   "truth": 18.93,
+   "bits": [
+    37.6,
+    37.6,
+    26.6
+   ]
+  },
+  {
+   "rank": 999999,
+   "password": "vaang555",
+   "truth": 19.93,
+   "bits": [
+    41.4,
+    29.9,
+    23.3
+   ]
+  }
+ ],
+ "control": {
+  "random8": {
+   "title": "случайный, 8 символов",
+   "n": 2000,
+   "truth": {
+    "median": 51.32,
+    "min": 51.32,
+    "max": 51.32
+   },
+   "knownWhole": {
+    "bastionbit": 0,
+    "zxcvbn": 0
+   },
+   "detectorFound": 0.0075,
+   "estimators": {
+    "formula": {
+     "median": 52.44,
+     "p25": 52.44,
+     "p75": 52.44,
+     "p10": 52.44,
+     "p90": 52.44,
+     "medianError": 1.12,
+     "meanAbsError": 1.12,
+     "over10": 0,
+     "under10": 0,
+     "levels": [
+      0,
+      0,
+      1,
+      0,
+      0
+     ],
+     "spearman": null
+    },
+    "bastionbit": {
+     "median": 52.44,
+     "p25": 52.44,
+     "p75": 52.44,
+     "p10": 52.44,
+     "p90": 52.44,
+     "medianError": 1.12,
+     "meanAbsError": 1.19,
+     "over10": 0,
+     "under10": 0.005,
+     "levels": [
+      0,
+      0,
+      1,
+      0,
+      0
+     ],
+     "spearman": null
+    },
+    "zxcvbn": {
+     "median": 26.58,
+     "p25": 26.58,
+     "p75": 26.58,
+     "p10": 26.58,
+     "p90": 26.58,
+     "medianError": -24.74,
+     "meanAbsError": 24.75,
+     "over10": 0,
+     "under10": 1,
+     "levels": [
+      1,
+      0,
+      0,
+      0,
+      0
+     ],
+     "spearman": null
+    }
+   },
+   "exact": 51.32,
+   "samples": [
+    "5eY#\"g/v",
+    "-_IDWdJ5",
+    "Xbdq2%|B"
+   ]
+  },
+  "random12": {
+   "title": "случайный, 12 символов",
+   "n": 2000,
+   "truth": {
+    "median": 78.14,
+    "min": 78.14,
+    "max": 78.14
+   },
+   "knownWhole": {
+    "bastionbit": 0,
+    "zxcvbn": 0
+   },
+   "detectorFound": 0.011,
+   "estimators": {
+    "formula": {
+     "median": 78.66,
+     "p25": 78.66,
+     "p75": 78.66,
+     "p10": 78.66,
+     "p90": 78.66,
+     "medianError": 0.51,
+     "meanAbsError": 0.51,
+     "over10": 0,
+     "under10": 0,
+     "levels": [
+      0,
+      0,
+      0,
+      1,
+      0
+     ],
+     "spearman": null
+    },
+    "bastionbit": {
+     "median": 78.66,
+     "p25": 78.66,
+     "p75": 78.66,
+     "p10": 78.66,
+     "p90": 78.66,
+     "medianError": 0.51,
+     "meanAbsError": 0.62,
+     "over10": 0,
+     "under10": 0.003,
+     "levels": [
+      0,
+      0,
+      0,
+      1,
+      0
+     ],
+     "spearman": null
+    },
+    "zxcvbn": {
+     "median": 39.86,
+     "p25": 39.86,
+     "p75": 39.86,
+     "p10": 39.86,
+     "p90": 39.86,
+     "medianError": -38.28,
+     "meanAbsError": 38.32,
+     "over10": 0,
+     "under10": 1,
+     "levels": [
+      0,
+      0.0005,
+      0.9995,
+      0,
+      0
+     ],
+     "spearman": null
+    }
+   },
+   "exact": 78.14,
+   "samples": [
+    "Lbpu<FzAJ90N",
+    "J#oi0'rU|7Wh",
+    "*y~4C^7/jPgE"
+   ]
+  },
+  "random16": {
+   "title": "случайный, 16 символов",
+   "n": 2000,
+   "truth": {
+    "median": 104.59,
+    "min": 104.59,
+    "max": 104.59
+   },
+   "knownWhole": {
+    "bastionbit": 0,
+    "zxcvbn": 0
+   },
+   "detectorFound": 0.007,
+   "estimators": {
+    "formula": {
+     "median": 104.87,
+     "p25": 104.87,
+     "p75": 104.87,
+     "p10": 104.87,
+     "p90": 104.87,
+     "medianError": 0.28,
+     "meanAbsError": 0.28,
+     "over10": 0,
+     "under10": 0,
+     "levels": [
+      0,
+      0,
+      0,
+      1,
+      0
+     ],
+     "spearman": null
+    },
+    "bastionbit": {
+     "median": 104.87,
+     "p25": 104.87,
+     "p75": 104.87,
+     "p10": 104.87,
+     "p90": 104.87,
+     "medianError": 0.28,
+     "meanAbsError": 0.37,
+     "over10": 0,
+     "under10": 0.007,
+     "levels": [
+      0,
+      0,
+      0,
+      1,
+      0
+     ],
+     "spearman": null
+    },
+    "zxcvbn": {
+     "median": 53.15,
+     "p25": 53.15,
+     "p75": 53.15,
+     "p10": 53.15,
+     "p90": 53.15,
+     "medianError": -51.44,
+     "meanAbsError": 51.51,
+     "over10": 0,
+     "under10": 1,
+     "levels": [
+      0,
+      0,
+      1,
+      0,
+      0
+     ],
+     "spearman": null
+    }
+   },
+   "exact": 104.59,
+   "samples": [
+    "icT9yhKub{q$c1n^",
+    "$za=lg~H(0]srVUg",
+    "a&P1JHZ7hiO}727C"
+   ]
+  },
+  "phrase6": {
+   "title": "фраза из 6 слов",
+   "n": 2000,
+   "truth": {
+    "median": 52.77,
+    "min": 52.77,
+    "max": 52.77
+   },
+   "knownWhole": {
+    "bastionbit": 0,
+    "zxcvbn": 0
+   },
+   "detectorFound": 1,
+   "estimators": {
+    "formula": {
+     "median": 288.27,
+     "p25": 269.47,
+     "p75": 307.07,
+     "p10": 250.67,
+     "p90": 325.87,
+     "medianError": 235.5,
+     "meanAbsError": 235.72,
+     "over10": 1,
+     "under10": 0,
+     "levels": [
+      0,
+      0,
+      0,
+      0,
+      1
+     ],
+     "spearman": null
+    },
+    "bastionbit": {
+     "median": 52.77,
+     "p25": 52.77,
+     "p75": 52.77,
+     "p10": 52.77,
+     "p90": 52.77,
+     "medianError": 0,
+     "meanAbsError": 0,
+     "over10": 0,
+     "under10": 0,
+     "levels": [
+      0,
+      0,
+      1,
+      0,
+      0
+     ],
+     "spearman": null
+    },
+    "zxcvbn": {
+     "median": 152.81,
+     "p25": 142.75,
+     "p75": 162.77,
+     "p10": 132.88,
+     "p90": 172.64,
+     "medianError": 100.04,
+     "meanAbsError": 99.61,
+     "over10": 1,
+     "under10": 0,
+     "levels": [
+      0,
+      0,
+      0,
+      0.043,
+      0.957
+     ],
+     "spearman": null
+    }
+   },
+   "exact": 52.77,
+   "samples": [
+    "Обиженный оператор притянул 49 старинных ручьев",
+    "Юбилейная озорница прикатила 86 мигающих беседок",
+    "Имбирный тукан привез 91 радужную неваляшку"
+   ]
+  },
+  "phrase6layout": {
+   "title": "фраза из 6 слов в английской раскладке",
+   "n": 2000,
+   "truth": {
+    "median": 52.77,
+    "min": 52.77,
+    "max": 52.77
+   },
+   "knownWhole": {
+    "bastionbit": 0,
+    "zxcvbn": 0
+   },
+   "detectorFound": 1,
+   "estimators": {
+    "formula": {
+     "median": 295.64,
+     "p25": 275.93,
+     "p75": 315.35,
+     "p10": 262.79,
+     "p90": 335.06,
+     "medianError": 242.87,
+     "meanAbsError": 246.02,
+     "over10": 1,
+     "under10": 0,
+     "levels": [
+      0,
+      0,
+      0,
+      0,
+      1
+     ],
+     "spearman": null
+    },
+    "bastionbit": {
+     "median": 52.77,
+     "p25": 52.77,
+     "p75": 52.77,
+     "p10": 52.77,
+     "p90": 52.77,
+     "medianError": 0,
+     "meanAbsError": 0,
+     "over10": 0,
+     "under10": 0,
+     "levels": [
+      0,
+      0,
+      1,
+      0,
+      0
+     ],
+     "spearman": null
+    },
+    "zxcvbn": {
+     "median": 149.49,
+     "p25": 139.64,
+     "p75": 159.45,
+     "p10": 132.88,
+     "p90": 169.32,
+     "medianError": 96.72,
+     "meanAbsError": 97.39,
+     "over10": 1,
+     "under10": 0,
+     "levels": [
+      0,
+      0,
+      0,
+      0.056,
+      0.944
+     ],
+     "spearman": null
+    }
+   },
+   "exact": 52.77,
+   "samples": [
+    "Uke,jrfz rereirf ljcnfdbkf 65 cvtks[ ljvjd",
+    "Le,jdsq otyjr pfkfnfk 36 vjhcrb[ ge[jdbrjd",
+    "Fynbxysq ldjhybr regbk 53 cyt;ys[ cthdfynf"
+   ]
+  },
+  "rule": {
+   "title": "ментальное правило (до утечек)",
+   "n": 2000,
+   "truth": {
+    "median": 37.01,
+    "min": 37.01,
+    "max": 37.01
+   },
+   "knownWhole": {
+    "bastionbit": 0,
+    "zxcvbn": 0
+   },
+   "detectorFound": 0.9395,
+   "estimators": {
+    "formula": {
+     "median": 137.65,
+     "p25": 124.54,
+     "p75": 150.76,
+     "p10": 117.98,
+     "p90": 163.86,
+     "medianError": 100.63,
+     "meanAbsError": 102.32,
+     "over10": 1,
+     "under10": 0,
+     "levels": [
+      0,
+      0,
+      0,
+      0.3005,
+      0.6995
+     ],
+     "spearman": null
+    },
+    "bastionbit": {
+     "median": 93.85,
+     "p25": 78.09,
+     "p75": 109.36,
+     "p10": 68.8,
+     "p90": 125.45,
+     "medianError": 56.84,
+     "meanAbsError": 58.87,
+     "over10": 1,
+     "under10": 0,
+     "levels": [
+      0,
+      0,
+      0.0125,
+      0.8945,
+      0.093
+     ],
+     "spearman": null
+    },
+    "zxcvbn": {
+     "median": 69.18,
+     "p25": 62.51,
+     "p75": 76.4,
+     "p10": 56.47,
+     "p90": 83.05,
+     "medianError": 32.16,
+     "meanAbsError": 32.22,
+     "over10": 0.992,
+     "under10": 0,
+     "levels": [
+      0,
+      0,
+      0.2215,
+      0.7785,
+      0
+     ],
+     "spearman": null
+    }
+   },
+   "exact": 37.01,
+   "samples": [
+    "Pyfvtybnsqcgfcfntkm62$L",
+    ">ysqujcnm20#PN10",
+    "NV*Rheuksqgtrfhm12"
+   ]
+  }
+ },
+ "falsePositives": {
+  "8": {
+   "n": 20000,
+   "share": 0.0057,
+   "medianLoss": 10.22,
+   "maxLoss": 18.12
+  },
+  "12": {
+   "n": 20000,
+   "share": 0.0124,
+   "medianLoss": 10.29,
+   "maxLoss": 27.77
+  },
+  "16": {
+   "n": 20000,
+   "share": 0.0084,
+   "medianLoss": 12.23,
+   "maxLoss": 23.73
+  },
+  "20": {
+   "n": 20000,
+   "share": 0.003,
+   "medianLoss": 14.3,
+   "maxLoss": 21.91
+  }
+ },
+ "speedMs": {
+  "bastionbit": {
+   "median": 0.097,
+   "p99": 0.417,
+   "max": 329.8
+  },
+  "zxcvbn": {
+   "median": 0.152,
+   "p99": 0.905,
+   "max": 479.6
+  }
+ },
+ "hibp": {
+  "checked": "2026-11-05",
+  "cases": [
+   {
+    "password": "123456",
+    "prefix": "7C4A8",
+    "bucket": 1921,
+    "count": 210461208,
+    "bits": [
+     19.9,
+     1,
+     1
+    ]
+   },
+   {
+    "password": "qwerty123",
+    "prefix": "5CEC1",
+    "bucket": 2050,
+    "count": 13871714,
+    "bits": [
+     46.5,
+     8.3,
+     7.8
+    ]
+   },
+   {
+    "password": "gfhjkm",
+    "prefix": "BCD59",
+    "bucket": 1940,
+    "count": 1356569,
+    "bits": [
+     28.2,
+     6.8,
+     6.5
+    ]
+   },
+   {
+    "password": "ghbdtn",
+    "prefix": "F15E5",
+    "bucket": 1960,
+    "count": 739958,
+    "bits": [
+     28.2,
+     7,
+     7.6
+    ]
+   },
+   {
+    "password": "vfrcbv",
+    "prefix": "8270C",
+    "bucket": 2000,
+    "count": 369015,
+    "bits": [
+     28.2,
+     9.9,
+     9.3
+    ]
+   },
+   {
+    "password": "nfnmzyf1985",
+    "prefix": "51FE2",
+    "bucket": 1906,
+    "count": 1131,
+    "bits": [
+     56.9,
+     19.6,
+     16.5
+    ]
+   },
+   {
+    "password": "privet123",
+    "prefix": "965AF",
+    "bucket": 2015,
+    "count": 19113,
+    "bits": [
+     46.5,
+     13.6,
+     14.8
+    ]
+   },
+   {
+    "password": "Ilya2008!",
+    "prefix": "36366",
+    "bucket": 1915,
+    "count": 19,
+    "bits": [
+     59,
+     32.7,
+     27
+    ]
+   },
+   {
+    "password": "Barsik2024!",
+    "prefix": "A0CAA",
+    "bucket": 1986,
+    "count": 12,
+    "bits": [
+     72.1,
+     30.2,
+     29.7
+    ]
+   },
+   {
+    "password": "Rhfcyjzhcr24",
+    "prefix": "2AC0D",
+    "bucket": 1935,
+    "count": 21,
+    "bits": [
+     71.5,
+     27.4,
+     23.4
+    ]
+   },
+   {
+    "password": "Abjktnjdfzkbcf47!WL2",
+    "prefix": "7DA38",
+    "bucket": 1987,
+    "count": 0,
+    "bits": [
+     131.1,
+     106.4,
+     66.4
+    ]
+   },
+   {
+    "password": "correcthorsebatterystaple",
+    "prefix": "BFD36",
+    "bucket": 1973,
+    "count": 4173,
+    "bits": [
+     117.5,
+     55.1,
+     48
+    ]
+   },
+   {
+    "password": "k#9Lw!2zQpX7mN4v",
+    "prefix": "A53E1",
+    "bucket": 1993,
+    "count": 0,
+    "bits": [
+     104.9,
+     104.9,
+     53.2
+    ]
+   },
+   {
+    "password": "Сливочная уборщица перерисовала 76 позолоченных передников",
+    "prefix": "298EE",
+    "bucket": 1967,
+    "count": 0,
+    "bits": [
+     363.5,
+     52.8,
+     189.6
+    ]
+   }
+  ]
+ },
+ "seconds": 399
+}

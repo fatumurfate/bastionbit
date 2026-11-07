@@ -1,0 +1,17 @@
+{
+  "name": "bastionbit-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Автоматические тесты сайта BastionBit",
+  "scripts": {
+    "test": "node run.js",
+    "test:node": "node run.js --node",
+    "test:browser": "node run.js --browser"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0"
+  }
+}

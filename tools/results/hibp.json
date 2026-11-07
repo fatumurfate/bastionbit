@@ -1,0 +1,89 @@
+{
+  "checked": "2026-11-05",
+  "cases": [
+    {
+      "password": "123456",
+      "prefix": "7C4A8",
+      "bucket": 1921,
+      "count": 210461208
+    },
+    {
+      "password": "qwerty123",
+      "prefix": "5CEC1",
+      "bucket": 2050,
+      "count": 13871714
+    },
+    {
+      "password": "gfhjkm",
+      "prefix": "BCD59",
+      "bucket": 1940,
+      "count": 1356569
+    },
+    {
+      "password": "ghbdtn",
+      "prefix": "F15E5",
+      "bucket": 1960,
+      "count": 739958
+    },
+    {
+      "password": "vfrcbv",
+      "prefix": "8270C",
+      "bucket": 2000,
+      "count": 369015
+    },
+    {
+      "password": "nfnmzyf1985",
+      "prefix": "51FE2",
+      "bucket": 1906,
+      "count": 1131
+    },
+    {
+      "password": "privet123",
+      "prefix": "965AF",
+      "bucket": 2015,
+      "count": 19113
+    },
+    {
+      "password": "Ilya2008!",
+      "prefix": "36366",
+      "bucket": 1915,
+      "count": 19
+    },
+    {
+      "password": "Barsik2024!",
+      "prefix": "A0CAA",
+      "bucket": 1986,
+      "count": 12
+    },
+    {
+      "password": "Rhfcyjzhcr24",
+      "prefix": "2AC0D",
+      "bucket": 1935,
+      "count": 21
+    },
+    {
+      "password": "Abjktnjdfzkbcf47!WL2",
+      "prefix": "7DA38",
+      "bucket": 1987,
+      "count": 0
+    },
+    {
+      "password": "correcthorsebatterystaple",
+      "prefix": "BFD36",
+      "bucket": 1973,
+      "count": 4173
+    },
+    {
+      "password": "k#9Lw!2zQpX7mN4v",
+      "prefix": "A53E1",
+      "bucket": 1993,
+      "count": 0
+    },
+    {
+      "password": "Сливочная уборщица перерисовала 76 позолоченных передников",
+      "prefix": "298EE",
+      "bucket": 1967,
+      "count": 0
+    }
+  ]
+}
